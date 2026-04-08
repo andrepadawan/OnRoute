@@ -81,7 +81,7 @@ class GpsReader:
             #trying to connect
             try:
                 #while connected, update as many times TPV report
-                while 0 == self.session.read():
+                while 0 == session.read():
                     
                     #generating my report
                     report = session.next()
