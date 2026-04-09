@@ -1,9 +1,13 @@
 from time import time
 import datetime
 import threading
-from pydantic import BaseModel
+import uuid
+from typing import List
+from pydantic import BaseModel, Field, TypeAdapter
+
 """TO-DO:
-    #insert json file for schedules -> timetable.json
+    #insert json file for schedules -> timetable.json -> DONE
+    #check timetable
 """
 
 class Timeshifts(BaseModel):
@@ -13,6 +17,9 @@ class Timeshifts(BaseModel):
     #actual information
     start: datetime.datetime
     end: datetime.datetime
+
+_adapter = TypeAdapter(List[Timeshifts])
+
 
 class ScheduleManager:
     def __init__(self):
@@ -43,26 +50,55 @@ class ScheduleManager:
             self._thread.join(timeout = 5)
 
 
-    def check_timetable(self):
+    def check_timetable(self) -> bool:
+        #isolating time we are processing information
         self.now = datetime.datetime.now()
-        pass
+        table = self._read_json_file()
 
+        #not very smart ik, will be updated
+        for t in table:
+            if (self.now > t.start and self.now < t.end):
+                return True
+        return False
+
+    def _read_json_file(self) -> List[Timeshifts]:
+
+        try:
+            with open("timetable.json", "r") as f:
+                raw = f.read()
+                if not raw.strip():
+                    return []
+                return _adapter.validate_json(raw)
+        except FileNotFoundError:
+            return []
+
+
+    def _write_json_file(self, data: List[Timeshifts]):
+        with open("timetable.json", "wb") as f:
+            f.write(_adapter.dump_json(data))
 
     def insert_shift(self, start: datetime, end: datetime):
-
-        shift = Timeshifts(start = start, end = end)
-
-        with open("timetable.json", "w") as f:
-            f.write(shift.model_dump_json())
-
-
+        #creating a structure table to hold list of Timeshifts data type
+        table = self._read_json_file()
+        #using list methods to add a new shift to the file
+        table.append(Timeshifts(id=str(uuid.uuid4()), start=start, end=end))
+        #rewriting
+        self._write_json_file(table)
 
     def delete_shift(self, id: str):
-        with open("timetable.json", "r") as f:
-            raw_json_shifts = f.read()
+        raw_json_shifts = self._read_json_file()
+        table = [Timeshifts.model_validate(t) for t in raw_json_shifts]
+        table = [t for t in table if t.id != id]
+        self._write_json_file(table)
 
-            table = [Timeshifts.model_validate(t) for t in raw_json_shifts]
-            table = [t for t in table if t.id != id]
 
-        with open("timetable.json", "w") as f:
-            f.write(shift.model_dump_json())
+    def retrieve_shifts(self):
+        return self._read_json_file()
+
+
+
+# For debug purposes only, for this module
+if __name__ == "__main__":
+
+    scheduleManager = ScheduleManager()
+    print(scheduleManager.check_timetable())

@@ -1,6 +1,8 @@
 from fastapi import FastAPI
+from schedule_manager import ScheduleManager
 
 app = FastAPI()
+scheduleManager = ScheduleManager()
 
 #the endpoint to post coordinates to main site
 @app.get("/coordinates")
