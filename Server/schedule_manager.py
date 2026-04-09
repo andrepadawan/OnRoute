@@ -5,9 +5,12 @@ import uuid
 from typing import List
 from pydantic import BaseModel, Field, TypeAdapter
 
-"""TO-DO:
+"""
+    TO-DO:
     #insert json file for schedules -> timetable.json -> DONE
-    #check timetable
+    #check timetable -> DONE
+    #right now thread and lock are not necessary, 
+        function check is not yet adapted to a thread loop
 """
 
 class Timeshifts(BaseModel):
@@ -41,6 +44,7 @@ class ScheduleManager:
         self._thread = threading.Thread(target = self.check_timetable(),
             name = "ScheduleManager_thread",
             daemon = True)
+
 
 
     def stop(self):
@@ -81,7 +85,7 @@ class ScheduleManager:
         #creating a structure table to hold list of Timeshifts data type
         table = self._read_json_file()
         #using list methods to add a new shift to the file
-        table.append(Timeshifts(id=str(uuid.uuid4()), start=start, end=end))
+        table.append(Timeshifts(start=start, end=end))
         #rewriting
         self._write_json_file(table)
 
