@@ -1,10 +1,20 @@
 from fastapi import FastAPI
+import os
 from schedule_manager import ScheduleManager
 
-app = FastAPI()
+app = FastAPI(
+    docs_url="/docs" if os.getenv("ENV") == "development" else None,
+    redoc_url="/redoc" if os.getenv("ENV") == "development" else None,
+    openapi_url="/openapi.json" if os.getenv("ENV") == "development" else None
+)
+
 scheduleManager = ScheduleManager()
 
-#the endpoint to post coordinates to main site
+@app.get("/")
+async def root():
+    pass
+
+#the endpoint to post coordinates to the main site
 @app.get("/coordinates")
 async def get_coordinates():
     #posts coordinates
