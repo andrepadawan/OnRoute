@@ -26,10 +26,6 @@ _adapter = TypeAdapter(List[Timeshifts])
 
 class ScheduleManager:
     def __init__(self):
-        #coordinates
-        self.lat = 0.0
-        self.lon = 0.0
-        self.speed = 0.0
         self._Lock = threading.Lock()
         self._stop = threading.Event()
         self._thread = None
@@ -41,7 +37,7 @@ class ScheduleManager:
             return
 
         self._stop.clear()
-        self._thread = threading.Thread(target = self.check_timetable(),
+        self._thread = threading.Thread(target = self.check_timetable,
             name = "ScheduleManager_thread",
             daemon = True)
 

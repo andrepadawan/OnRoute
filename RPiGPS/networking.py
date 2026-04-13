@@ -3,6 +3,7 @@ import os
 import json
 import threading
 import logging
+import time
 from dotenv import load_dotenv
 from gps_module import GpsReader
 
@@ -16,11 +17,13 @@ class Networking:
     def __init__(self):
         self.url_site = os.getenv("URL_SITO_GPS")
         self.device_token = os.getenv("DEVICE_TOKEN")
-        self.gps_module = GpsReader()
-        self._thread = threading.Thread()
+        if os.getenv("ENV") != "development":
+            self.gps_module = GpsReader()
+        else:
+            self.gps_module = None
+        self._thread = None
         self._lock = threading.Lock()
         self._stop_event = threading.Event()
-        pass
 
     def start(self):
 
@@ -44,14 +47,19 @@ class Networking:
             self._thread.join(timeout=10)
 
     def get_payload(self) -> json:
-        with self._lock:
-            coord = {
-                "lon":self.gps_module.longitude,
-                "lat":self.gps_module.latitude,
-                "speed":self.gps_module.speed,
-                "fix_status":self.gps_module.fix_status
-            }
-        return coord
+        if os.getenv("ENV") != "development":
+            with self._lock:
+                coord = {
+                    "lon":self.gps_module.longitude,
+                    "lat":self.gps_module.latitude,
+                    "speed":self.gps_module.speed,
+                    "fix_status":self.gps_module.fix_status
+                }
+            return coord
+        else:
+            with open("mock_gps_coordinates.txt", "r") as f:
+                data = f.read()
+            return data
 
 
     def send_coord_loop(self):
@@ -84,3 +92,17 @@ class Networking:
 
         session.close()
 
+
+if __name__ == "__main__":
+    sender = Networking()
+    sender.start()
+
+    try:
+        while True:
+            time.sleep(2)
+
+    except KeyboardInterrupt:
+        print("\nStop.")
+
+    finally:
+        reader.stop()

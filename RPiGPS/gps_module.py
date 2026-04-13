@@ -52,7 +52,6 @@ class GpsReader:
     def write_coordinates(self, report):
         #Acquiring lock in order to write correctly without concurrency issues
         with self._lock:
-
             #For the sake of this project no other information is necessary
             self.latitude = report["lat"] 
             self.longitude = report["lon"]
@@ -115,17 +114,3 @@ class GpsReader:
 
 
 #For debug purposes only, for this module
-if __name__ == "__main__":
-    
-    reader = GpsReader()
-    reader.start()
-
-    try:
-        while True:
-            time.sleep(2)
-
-    except KeyboardInterrupt:
-        print("\nStop.")
-
-    finally:
-        reader.stop()
