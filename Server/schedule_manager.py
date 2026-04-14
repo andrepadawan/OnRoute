@@ -3,6 +3,7 @@ import datetime
 import threading
 import uuid
 from typing import List
+from pathlib import Path
 from pydantic import BaseModel, Field, TypeAdapter
 
 """
@@ -13,6 +14,7 @@ from pydantic import BaseModel, Field, TypeAdapter
         function check is not yet adapted to a thread loop
     #return shift in chronological order
 """
+TIMETABLE_FILE = Path(__file__).parent / "timetable.json"
 
 class Timeshifts(BaseModel):
     #generating unique id: useful for deleting/modifying shifts
@@ -43,7 +45,6 @@ class ScheduleManager:
             daemon = True)
 
 
-
     def stop(self):
         self._stop.set()
 
@@ -65,7 +66,7 @@ class ScheduleManager:
     def _read_json_file(self) -> List[Timeshifts]:
 
         try:
-            with open("timetable.json", "r") as f:
+            with open(TIMETABLE_FILE, "r") as f:
                 raw = f.read()
                 if not raw.strip() or raw == "null":
                     return []
@@ -75,7 +76,7 @@ class ScheduleManager:
 
 
     def _write_json_file(self, data: List[Timeshifts]):
-        with open("timetable.json", "wb") as f:
+        with open(TIMETABLE_FILE, "wb") as f:
                 f.write(_adapter.dump_json(data))
 
     def insert_shift(self, start: datetime, end: datetime):
@@ -102,7 +103,7 @@ class ScheduleManager:
         return table
 
 
-    def retrieve_shifts(self):
+    def retrieve_shifts(self) -> List[Timeshifts]:
         return self._read_json_file()
 
 

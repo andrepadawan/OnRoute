@@ -3,6 +3,7 @@ from fastapi import FastAPI, Request
 from fastapi.responses import JSONResponse
 from fastapi.responses import HTMLResponse
 from fastapi.templating import Jinja2Templates
+from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel
 import os
 from pathlib import Path
@@ -19,6 +20,9 @@ app = FastAPI(
     redoc_url="/redoc" if os.getenv("ENV") == "development" else None,
     openapi_url="/openapi.json" if os.getenv("ENV") == "development" else None
 )
+
+app.mount("/static", StaticFiles(directory=Path(__file__).parent / "static"), name="static" )
+
 
 #coordinates must have the same field of json received from rpi
 class PayloadReceived(BaseModel):
@@ -52,7 +56,8 @@ async def get_coordinates():
 @app.get("/admin", response_class=HTMLResponse)
 async def admin_page(request: Request):
     #displays admin page
-    return templates.TemplateResponse(request=request, name="admin.html")
+    data = scheduleManager.retrieve_shifts()
+    return templates.TemplateResponse(request=request, name="admin.html", context={"data":data})
 
 @app.post("/update-coordinates")
 async def update_coordinates(coords: PayloadReceived):
