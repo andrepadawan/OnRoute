@@ -1,12 +1,18 @@
 import threading
-from fastapi import FastAPI
+from fastapi import FastAPI, Request
 from fastapi.responses import JSONResponse
+from fastapi.responses import HTMLResponse
+from fastapi.templating import Jinja2Templates
 from pydantic import BaseModel
 import os
+from pathlib import Path
 from dotenv import load_dotenv
+
 from schedule_manager import ScheduleManager
 
 load_dotenv()
+
+templates = Jinja2Templates(Path(__file__).parent / "Templates")
 
 app = FastAPI(
     docs_url="/docs" if os.getenv("ENV") == "development" else None,
@@ -16,16 +22,16 @@ app = FastAPI(
 
 #coordinates must have the same field of json received from rpi
 class PayloadReceived(BaseModel):
-    lon: 0.0
-    lat: 0.0
-    speed: 0.0
-    fix_status: int
+    lon: float = 0.0
+    lat: float = 0.0
+    speed: float = 0.0
+    fix_status: int = 0
 
 class Coordinates(BaseModel):
-    lon: 0.0
-    lat: 0.0
-    speed: 0.0
-    info: "notactive"
+    lon: float = 0.0
+    lat: float = 0.0
+    speed: float = 0.0
+    info: str = "notactive"
 
 scheduleManager = ScheduleManager()
 
@@ -43,10 +49,10 @@ async def get_coordinates():
 
     #Not sending live location: outside of shift hours
 
-@app.get("/admin")
-async def admin_page():
+@app.get("/admin", response_class=HTMLResponse)
+async def admin_page(request: Request):
     #displays admin page
-    pass
+    return templates.TemplateResponse(request=request, name="admin.html")
 
 @app.post("/update-coordinates")
 async def update_coordinates(coords: PayloadReceived):

@@ -11,6 +11,7 @@ from pydantic import BaseModel, Field, TypeAdapter
     #check timetable -> DONE
     #right now thread and lock are not necessary, 
         function check is not yet adapted to a thread loop
+    #return shift in chronological order
 """
 
 class Timeshifts(BaseModel):
@@ -66,7 +67,7 @@ class ScheduleManager:
         try:
             with open("timetable.json", "r") as f:
                 raw = f.read()
-                if not raw.strip():
+                if not raw.strip() or raw == "null":
                     return []
                 return _adapter.validate_json(raw)
         except FileNotFoundError:
@@ -75,21 +76,30 @@ class ScheduleManager:
 
     def _write_json_file(self, data: List[Timeshifts]):
         with open("timetable.json", "wb") as f:
-            f.write(_adapter.dump_json(data))
+                f.write(_adapter.dump_json(data))
 
     def insert_shift(self, start: datetime, end: datetime):
         #creating a structure table to hold list of Timeshifts data type
         table = self._read_json_file()
         #using list methods to add a new shift to the file
         table.append(Timeshifts(start=start, end=end))
+        table = self.order_shifts(table)
         #rewriting
         self._write_json_file(table)
 
+
     def delete_shift(self, id: str):
-        raw_json_shifts = self._read_json_file()
-        table = [Timeshifts.model_validate(t) for t in raw_json_shifts]
+        table = self._read_json_file()
         table = [t for t in table if t.id != id]
+        table = self.order_shifts(table)
         self._write_json_file(table)
+
+
+    def order_shifts(self, data: List[Timeshifts]) -> List[Timeshifts]:
+        #Ordering items from most recent to last
+        table = data.copy()
+        table.sort(key = lambda t: t.start, reverse = True)
+        return table
 
 
     def retrieve_shifts(self):
@@ -101,4 +111,5 @@ class ScheduleManager:
 if __name__ == "__main__":
 
     scheduleManager = ScheduleManager()
-    print(scheduleManager.check_timetable())
+    scheduleManager.insert_shift(datetime.datetime(2021, 5, 5), datetime.datetime(2021, 5, 9))
+    print(scheduleManager.retrieve_shifts())
