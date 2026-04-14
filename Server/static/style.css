@@ -1,0 +1,9 @@
+.content{
+    display: flex;
+}
+
+.row-table {
+    display: flex;
+    flex-direction: row;
+    align-content: center;
+}

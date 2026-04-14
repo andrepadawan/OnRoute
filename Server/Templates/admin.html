@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Admin page</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <div class="content">
+        <div class="title">
+            <h3>Shifts</h3>
+            <div class="shift-table">
+                <table>
+                    {% for t in data %}
+                        <div class="row-table">
+                            Da {{t.start}} a {{t.end}}<br>
+                            <button class="modify"> V </button>
+                            <button class="delete"> X </button>
+                        </div>
+                     {% endfor %}
+                </table>
+            </div>
+        </div>
+    </div>
+    <h1></h1>
+</body>
+</html>
