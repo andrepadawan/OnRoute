@@ -44,7 +44,9 @@ def authentication(credentials: Annotated[HTTPBasicCredentials, Depends(security
 
 router = APIRouter(dependencies=[Depends(authentication)])
 
+
 app.mount("/static", StaticFiles(directory=Path(__file__).parent / "static"), name="static" )
+
 
 #coordinates must have the same field of json received from rpi
 class PayloadReceived(BaseModel):
@@ -90,6 +92,7 @@ async def admin_page(request: Request):
                                       name="admin.html",
                                       context={"data":data})
 
+
 @app.post("/update-coordinates")
 async def update_coordinates(coords: PayloadReceived, authorization: str = Header(None)):
     #receives from Raspberry
@@ -101,11 +104,11 @@ async def update_coordinates(coords: PayloadReceived, authorization: str = Heade
         lastCoordinates.speed = coords.speed
         lastCoordinates.info = "active"
 
-
 @router.post("/admin/delete")
 async def delete_shift(id: str = Form()):
     scheduleManager.delete_shift(id)
     return RedirectResponse("/admin", status_code=303)
+
 
 @router.post("/admin/add")
 async def add_shift(start_date: str = Form(...),
