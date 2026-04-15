@@ -14,8 +14,11 @@
                     {% for t in data %}
                         <div class="row-table">
                             Da {{t.start}} a {{t.end}}<br>
-                            <button class="modify"> V </button>
-                            <button class="delete"> X </button>
+                            <button class="modify" type="button"> Modify </button>
+                            <form method="post" action="/admin/delete">
+                                <input type="hidden" name="id" value="{{t.id}}">
+                                <button class="delete" type="submit"> Delete </button>
+                            </form>
                         </div>
                      {% endfor %}
                 </table>

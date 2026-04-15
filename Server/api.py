@@ -1,7 +1,8 @@
+import datetime
 import threading
 from fastapi import FastAPI, Request
-from fastapi.responses import JSONResponse
-from fastapi.responses import HTMLResponse
+from fastapi.responses import JSONResponse, HTMLResponse, RedirectResponse
+from fastapi import Form
 from fastapi.templating import Jinja2Templates
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel
@@ -57,7 +58,7 @@ async def get_coordinates():
 async def admin_page(request: Request):
     #displays admin page
     data = scheduleManager.retrieve_shifts()
-    return templates.TemplateResponse(request=request, name="admin.html", context={"data":data})
+    return templates.TemplateResponse(request=request, name="admin.html", context={"data":data, "sm":scheduleManager})
 
 @app.post("/update-coordinates")
 async def update_coordinates(coords: PayloadReceived):
@@ -68,3 +69,11 @@ async def update_coordinates(coords: PayloadReceived):
         lastCoordinates.speed = coords.speed
 
 
+@app.post("/admin/delete")
+async def delete_shift(id: str = Form()):
+    scheduleManager.delete_shift(id)
+    return RedirectResponse("/admin", status_code=303)
+
+@app.post("/admin/add")
+async def add_shift(start: datetime.datetime = Form(...), end: datetime.datetime = Form(...)):
+    pass
