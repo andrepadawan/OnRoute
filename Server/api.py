@@ -70,6 +70,7 @@ async def update_coordinates(coords: PayloadReceived):
         lastCoordinates.lon = coords.lon
         lastCoordinates.lat = coords.lat
         lastCoordinates.speed = coords.speed
+        lastCoordinates.info = "active"
 
 
 @app.post("/admin/delete")

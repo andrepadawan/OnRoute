@@ -58,8 +58,7 @@ class Networking:
             return coord
         else:
             with open("mock_gps_coordinates.txt", "r") as f:
-                data = f.read()
-            return data
+                return json.loads(f.read())
 
 
     def send_coord_loop(self):
