@@ -18,7 +18,6 @@ load_dotenv()
 
 templates = Jinja2Templates(Path(__file__).parent / "Templates")
 #TO-DO
-#use Dependencies for authentication
 
 app = FastAPI(
     docs_url="/docs" if os.getenv("ENV") == "development" else None,
@@ -35,7 +34,7 @@ def authentication(credentials: Annotated[HTTPBasicCredentials, Depends(security
     is_correct_username = secrets.compare_digest(_username, credentials.username)
     _password = os.getenv("ADMIN_PASSWORD")
     is_correct_password = secrets.compare_digest(_password, credentials.password)
-    if not (is_correct_password or is_correct_username):
+    if not (is_correct_password and is_correct_username):
         raise HTTPException(status_code=401, detail="Unauthorized - Credentials not correct",
                             headers={"WWW-Authenticate": "Basic"},
                             )
@@ -84,7 +83,7 @@ async def get_coordinates():
 
 
 
-@router.get("/admin", response_class=HTMLResponse, dependencies=[Depends(authentication)])
+@router.get("/admin", response_class=HTMLResponse)
 async def admin_page(request: Request):
     #displays admin page
     data = scheduleManager.retrieve_shifts()
