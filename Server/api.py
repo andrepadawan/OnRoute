@@ -1,8 +1,7 @@
 import datetime
 import threading
-from fastapi import FastAPI, Request
+from fastapi import FastAPI, Request, Header, HTTPException, Form
 from fastapi.responses import JSONResponse, HTMLResponse, RedirectResponse
-from fastapi import Form
 from fastapi.templating import Jinja2Templates
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel
@@ -64,8 +63,10 @@ async def admin_page(request: Request):
                                       context={"data":data})
 
 @app.post("/update-coordinates")
-async def update_coordinates(coords: PayloadReceived):
+async def update_coordinates(coords: PayloadReceived, authorization: str = Header(None)):
     #receives from Raspberry
+    if authorization != f"Bearer {os.getenv('DEVICE_TOKEN')}":
+        raise HTTPException(status_code=401, detail="Unauthorized")
     with _Lock:
         lastCoordinates.lon = coords.lon
         lastCoordinates.lat = coords.lat
