@@ -81,6 +81,12 @@ class ScheduleManager:
 
     def insert_shift(self, start: datetime, end: datetime):
         #creating a structure table to hold list of Timeshifts data type
+        #check condition: start<end otherwise swap
+        if start>=end:
+            temp = end
+            end = start
+            start = temp
+
         table = self._read_json_file()
         #using list methods to add a new shift to the file
         table.append(Timeshifts(start=start, end=end))

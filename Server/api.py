@@ -50,7 +50,8 @@ async def get_coordinates():
     #posts coordinates
     if scheduleManager.check_timetable():
         #sending the coordinates in JSON
-        return lastCoordinates
+        with _Lock:
+            return lastCoordinates
 
     #Not sending live location: outside of shift hours
 
@@ -58,7 +59,9 @@ async def get_coordinates():
 async def admin_page(request: Request):
     #displays admin page
     data = scheduleManager.retrieve_shifts()
-    return templates.TemplateResponse(request=request, name="admin.html", context={"data":data, "sm":scheduleManager})
+    return templates.TemplateResponse(request=request,
+                                      name="admin.html",
+                                      context={"data":data})
 
 @app.post("/update-coordinates")
 async def update_coordinates(coords: PayloadReceived):
@@ -75,5 +78,11 @@ async def delete_shift(id: str = Form()):
     return RedirectResponse("/admin", status_code=303)
 
 @app.post("/admin/add")
-async def add_shift(start: datetime.datetime = Form(...), end: datetime.datetime = Form(...)):
-    pass
+async def add_shift(start_date: str = Form(...),
+                    start_time: str = Form(...),
+                    end_date: str = Form(...),
+                    end_time: str = Form(...)):
+    start = datetime.datetime.fromisoformat(f"{start_date}T{start_time}")
+    end = datetime.datetime.fromisoformat(f"{end_date}T{end_time}")
+    scheduleManager.insert_shift(start,end)
+    return RedirectResponse("/admin", status_code=303)

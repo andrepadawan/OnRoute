@@ -10,6 +10,21 @@
         <div class="title">
             <h3>Shifts</h3>
             <div class="shift-table">
+                <nav class="horizontal-nav-bar">
+                    <button onclick="document.getElementById('add-dialog').showModal()"> Add shift</button>
+                    <dialog id="add-dialog">
+                        <form method="post" action="/admin/add">
+                            <label>Start date: <input type="date" name="start_date" required></label>
+                            <label>Start time: <input type="time" name="start_time" required></label>
+                            <label>End date: <input type="date" name="end_date" required></label>
+                            <label>End time: <input type="time" name="end_time" required></label>
+                            <button type="submit">Add</button>
+                            <button type="button" onclick="document.getElementById('add-dialog').close()">
+                                Close
+                            </button>
+                        </form>
+                    </dialog>
+                </nav>
                 <table>
                     {% for t in data %}
                         <div class="row-table">
