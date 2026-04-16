@@ -1,13 +1,14 @@
+import os
 import datetime
 import threading
 import secrets
+
 from fastapi import FastAPI, Request, Header, HTTPException, Form, Depends, APIRouter
 from fastapi.responses import JSONResponse, HTMLResponse, RedirectResponse
 from fastapi.templating import Jinja2Templates
 from fastapi.staticfiles import StaticFiles
 from fastapi.security import HTTPBasic, HTTPBasicCredentials
 from pydantic import BaseModel
-import os
 from typing import Annotated
 from pathlib import Path
 from dotenv import load_dotenv
@@ -16,9 +17,11 @@ from schedule_manager import ScheduleManager
 
 load_dotenv()
 
-templates = Jinja2Templates(Path(__file__).parent / "Templates")
 #TO-DO
+# -Add functionality to modify button
+# -make it pretty
 
+#Documentation will be unavailable in production for safety reasons: reading the .env
 app = FastAPI(
     docs_url="/docs" if os.getenv("ENV") == "development" else None,
     redoc_url="/redoc" if os.getenv("ENV") == "development" else None,
@@ -36,18 +39,20 @@ def authentication(credentials: Annotated[HTTPBasicCredentials, Depends(security
     is_correct_password = secrets.compare_digest(_password, credentials.password)
     if not (is_correct_password and is_correct_username):
         raise HTTPException(status_code=401, detail="Unauthorized - Credentials not correct",
-                            headers={"WWW-Authenticate": "Basic"},
-                            )
+                            headers={"WWW-Authenticate": "Basic"})
     return credentials.username
 
-
+#router will manage a single authentication across a group of endpoints (admin endpoints).
 router = APIRouter(dependencies=[Depends(authentication)])
 
-
+#telling FastAPI where the CSS at
 app.mount("/static", StaticFiles(directory=Path(__file__).parent / "static"), name="static" )
 
+#telling Jinja where the HTML at
+templates = Jinja2Templates(Path(__file__).parent / "Templates")
 
-#coordinates must have the same field of json received from rpi
+#Setting up custom classes for data validation
+#coordinates must have the same field of the JSON received from rpi
 class PayloadReceived(BaseModel):
     lon: float = 0.0
     lat: float = 0.0
@@ -60,8 +65,8 @@ class Coordinates(BaseModel):
     speed: float = 0.0
     info: str = "notactive"
 
-scheduleManager = ScheduleManager()
 
+scheduleManager = ScheduleManager()
 payloadRpi = PayloadReceived()
 lastCoordinates = Coordinates()
 _Lock = threading.Lock()
@@ -70,6 +75,7 @@ _Lock = threading.Lock()
 @app.get("/coordinates")
 async def get_coordinates():
     #posts coordinates
+    #but only if we are in the authorized time window
     if scheduleManager.check_timetable():
         #sending the coordinates in JSON
         with _Lock:
@@ -81,12 +87,13 @@ async def get_coordinates():
 
     #Not sending live location: outside of shift hours
 
-
-
+#administration page
 @router.get("/admin", response_class=HTMLResponse)
 async def admin_page(request: Request):
     #displays admin page
     data = scheduleManager.retrieve_shifts()
+
+    #giving back a UI with Jinja, passing the shifts
     return templates.TemplateResponse(request=request,
                                       name="admin.html",
                                       context={"data":data})
@@ -105,6 +112,8 @@ async def update_coordinates(coords: PayloadReceived, authorization: str = Heade
 
 @router.post("/admin/delete")
 async def delete_shift(id: str = Form()):
+    #Form is used to pass data from HTML to code here. Important though: fields must have
+    #the same name! id
     scheduleManager.delete_shift(id)
     return RedirectResponse("/admin", status_code=303)
 
@@ -119,4 +128,5 @@ async def add_shift(start_date: str = Form(...),
     scheduleManager.insert_shift(start,end)
     return RedirectResponse("/admin", status_code=303)
 
+#At last, we tell the app of a router obj
 app.include_router(router)
