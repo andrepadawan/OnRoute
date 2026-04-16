@@ -20,6 +20,9 @@ load_dotenv()
 #TO-DO
 # -Add functionality to modify button
 # -make it pretty
+# - aggiungere status LED per vedere quando il servizio è attivo e quando no
+# - possibility to add POI via admin page, using Leafleet(?) or bare coordinates
+
 
 #Documentation will be unavailable in production for safety reasons: reading the .env
 app = FastAPI(
@@ -93,7 +96,7 @@ async def get_coordinates():
 async def admin_page(request: Request):
     #displays admin page
     data = scheduleManager.retrieve_shifts()
-
+    #data è una lista di Timeshifts{id, start, end}
     #giving back a UI with Jinja, passing the shifts
     return templates.TemplateResponse(request=request,
                                       name="admin.html",

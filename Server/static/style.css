@@ -5,12 +5,9 @@
 }
 
 .row-table {
-    display: flex;
-    flex-direction: row;
     align-content: center;
     padding: 4px;
     gap: 10px;
-
 }
 
 .admin-page {
