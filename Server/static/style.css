@@ -1,9 +1,45 @@
 .content{
     display: flex;
+    flex-direction: column;
+    justify-content: center;
 }
 
 .row-table {
     display: flex;
     flex-direction: row;
     align-content: center;
+    padding: 4px;
+    gap: 10px;
+
+}
+
+.admin-page {
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.add-dialog {
+    justify-content: right;
+    margin-bottom: 10px;
+    margin-top: 10px;
+}
+
+.table-shift {
+    border-width: 1px;
+    border-color: cornflowerblue;
+    border-style: solid;
+    border-radius: 2px;
+    background-color: color-mix(in oklab, color-mix(in oklab, cornflowerblue 70%, lightblue), whitesmoke 70%)}
+
+.horizontal-nav-bar {
+    display: flex;
+    justify-content: flex-end;
+    margin: 4px;
+}
+
+body {
+    background-color: #f0f2f5;
 }

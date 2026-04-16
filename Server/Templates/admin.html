@@ -7,11 +7,11 @@
 </head>
 <body>
     <div class="content">
-        <div class="title">
-            <h3>Shifts</h3>
-            <div class="shift-table">
-                <nav class="horizontal-nav-bar">
-                    <button onclick="document.getElementById('add-dialog').showModal()"> Add shift</button>
+        <div class="admin-page">
+            <h3>Turni</h3>
+                <div class="shift-table">
+                    <nav class="horizontal-nav-bar">
+                    <button onclick="document.getElementById('add-dialog').showModal()">Add shift</button>
                     <dialog id="add-dialog">
                         <form method="post" action="/admin/add">
                             <label>Start date: <input type="date" name="start_date" required></label>
@@ -25,18 +25,25 @@
                         </form>
                     </dialog>
                 </nav>
-                <table>
+                    <table class="table-shift">
                     {% for t in data %}
-                        <div class="row-table">
-                            Da {{t.start}} a {{t.end}}<br>
-                            <button class="modify" type="button"> Modify </button>
-                            <form method="post" action="/admin/delete">
+                        <tr class="row-table">
+                            <td>Da {{t.start}} a {{t.end}}<td></td>
+                            <td><button class="modify" type="button"> Modify </button></td>
+                            <td><form method="post" action="/admin/delete">
                                 <input type="hidden" name="id" value="{{t.id}}">
                                 <button class="delete" type="submit"> Delete </button>
-                            </form>
-                        </div>
+                            </form></td>
+                        </tr>
                      {% endfor %}
                 </table>
+                    <div class="info">
+                        <p>
+                            Il servizio sarà attivo negli orari specificati. <br>
+                            Premere (...) per modificare, eliminare o aggiungere un turno
+
+                        </p>
+                    </div>
             </div>
         </div>
     </div>

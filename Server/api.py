@@ -27,6 +27,7 @@ app = FastAPI(
     redoc_url="/redoc" if os.getenv("ENV") == "development" else None,
     openapi_url="/openapi.json" if os.getenv("ENV") == "development" else None
 )
+
 #Creating HTTBasic instance: will be used for authentication
 security = HTTPBasic()
 
