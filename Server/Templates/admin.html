@@ -28,8 +28,8 @@
                     <table class="table-shift">
                     {% for t in data %}
                         <tr class="row-table">
-                            <td>Da {{t.start.strftime('%d-%m-%Y alle %H:%m')}}
-                                al {{t.end.strftime('%d-%m-%Y alle %H:%m')}}</td>
+                            <td>Da {{t.start.strftime('%d-%m-%Y alle %H:%M')}}
+                                al {{t.end.strftime('%d-%m-%Y alle %H:%M')}}</td>
                             <td><button class="modify" type="button"> Modify </button></td>
                             <td><form method="post" action="/admin/delete">
                                 <input type="hidden" name="id" value="{{t.id}}">

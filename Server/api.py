@@ -14,6 +14,7 @@ from pathlib import Path
 from dotenv import load_dotenv
 
 from schedule_manager import ScheduleManager
+from mapManager import MapManager
 
 load_dotenv()
 
@@ -48,15 +49,20 @@ def authentication(credentials: Annotated[HTTPBasicCredentials, Depends(security
 
 #router will manage a single authentication across a group of endpoints (admin endpoints).
 router = APIRouter(dependencies=[Depends(authentication)])
+#And then we tell the app of a router obj
+app.include_router(router)
 
+#--------------------Configuring file location for HTML and CSS----------------
 #telling FastAPI where the CSS at
 app.mount("/static", StaticFiles(directory=Path(__file__).parent / "static"), name="static" )
 
 #telling Jinja where the HTML at
 templates = Jinja2Templates(Path(__file__).parent / "Templates")
 
+#------------------- Custom data types------------------------
 #Setting up custom classes for data validation
 #coordinates must have the same field of the JSON received from rpi
+
 class PayloadReceived(BaseModel):
     lon: float = 0.0
     lat: float = 0.0
@@ -71,10 +77,19 @@ class Coordinates(BaseModel):
 
 
 scheduleManager = ScheduleManager()
-payloadRpi = PayloadReceived()
+mapManager = MapManager()
 lastCoordinates = Coordinates()
 _Lock = threading.Lock()
 
+
+#--------------------- Public endpoints (Map) -------------
+@app.get("/embed")
+async def embed(request: Request):
+    return templates.TemplateResponse(request=request,
+                                      name='map.html')
+
+
+#---------------------Updating coordinates endpoints
 #the endpoint to post coordinates to the main site
 @app.get("/coordinates")
 async def get_coordinates():
@@ -91,18 +106,6 @@ async def get_coordinates():
 
     #Not sending live location: outside of shift hours
 
-#administration page
-@router.get("/admin", response_class=HTMLResponse)
-async def admin_page(request: Request):
-    #displays admin page
-    data = scheduleManager.retrieve_shifts()
-    #data è una lista di Timeshifts{id, start, end}
-    #giving back a UI with Jinja, passing the shifts
-    return templates.TemplateResponse(request=request,
-                                      name="admin.html",
-                                      context={"data":data})
-
-
 @app.post("/update-coordinates")
 async def update_coordinates(coords: PayloadReceived, authorization: str = Header(None)):
     #receives from Raspberry
@@ -113,6 +116,21 @@ async def update_coordinates(coords: PayloadReceived, authorization: str = Heade
         lastCoordinates.lat = coords.lat
         lastCoordinates.speed = coords.speed
         lastCoordinates.info = "active"
+
+#------------------administration section -----------------
+# Router works here: its dependency with auth allows modifications only to be
+# performed by authorized personnel
+
+@router.get("/admin", response_class=HTMLResponse)
+async def admin_page(request: Request):
+    #displays admin page
+    data = scheduleManager.retrieve_shifts()
+    #data è una lista di Timeshifts{id, start, end}
+    #giving back a UI with Jinja, passing the shifts
+    return templates.TemplateResponse(request=request,
+                                      name="admin.html",
+                                      context={"data":data})
+
 
 @router.post("/admin/delete")
 async def delete_shift(id: str = Form()):
@@ -132,5 +150,3 @@ async def add_shift(start_date: str = Form(...),
     scheduleManager.insert_shift(start,end)
     return RedirectResponse("/admin", status_code=303)
 
-#At last, we tell the app of a router obj
-app.include_router(router)
