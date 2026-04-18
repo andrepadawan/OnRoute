@@ -17,6 +17,11 @@ class MapManager():
     def __init__(self):
         pass
 
+    def addPointsOfInterest(self, POI: PointOfInterest):
+        data = self.readPointsOfInterest()
+        data.append(POI)
+        self.writePointsOfInterest(data)
+
     def readPointsOfInterest(self) -> List[PointOfInterest]:
         try:
             with open(POI_FILE, "r") as f:
@@ -27,5 +32,6 @@ class MapManager():
         except FileNotFoundError:
             return []
 
-    def writePointsOfInterest(self):
-        pass
+    def writePointsOfInterest(self, data: List[PointOfInterest]):
+        with open(POI_FILE, "wb") as f:
+            f.write(_adapter.dump_json(data))
