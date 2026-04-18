@@ -14,7 +14,7 @@ from pathlib import Path
 from dotenv import load_dotenv
 
 from schedule_manager import ScheduleManager
-from mapManager import MapManager
+from mapManager import MapManager, PointOfInterest
 
 load_dotenv()
 
@@ -49,8 +49,6 @@ def authentication(credentials: Annotated[HTTPBasicCredentials, Depends(security
 
 #router will manage a single authentication across a group of endpoints (admin endpoints).
 router = APIRouter(dependencies=[Depends(authentication)])
-#And then we tell the app of a router obj
-app.include_router(router)
 
 #--------------------Configuring file location for HTML and CSS----------------
 #telling FastAPI where the CSS at
@@ -124,15 +122,16 @@ async def update_coordinates(coords: PayloadReceived, authorization: str = Heade
 @router.get("/admin", response_class=HTMLResponse)
 async def admin_page(request: Request):
     #displays admin page
-    data = scheduleManager.retrieve_shifts()
-    #data è una lista di Timeshifts{id, start, end}
+    shifts = scheduleManager.retrieve_shifts()
+    poi = mapManager.readPointsOfInterest()
+    #shifts is list of Timeshifts{id, start, end}
     #giving back a UI with Jinja, passing the shifts
     return templates.TemplateResponse(request=request,
                                       name="admin.html",
-                                      context={"data":data})
+                                      context={"shifts":shifts, "poi":poi})
 
 
-@router.post("/admin/delete")
+@router.post("/admin/delete-shift")
 async def delete_shift(id: str = Form()):
     #Form is used to pass data from HTML to code here. Important though: fields must have
     #the same name! id
@@ -140,7 +139,7 @@ async def delete_shift(id: str = Form()):
     return RedirectResponse("/admin", status_code=303)
 
 
-@router.post("/admin/add")
+@router.post("/admin/add-shift")
 async def add_shift(start_date: str = Form(...),
                     start_time: str = Form(...),
                     end_date: str = Form(...),
@@ -150,3 +149,18 @@ async def add_shift(start_date: str = Form(...),
     scheduleManager.insert_shift(start,end)
     return RedirectResponse("/admin", status_code=303)
 
+@router.post("/admin/add-poi")
+async def add_poi(name: str = Form(...),
+                  lat: float = Form(...),
+                  lon: float = Form(...)):
+    poi = PointOfInterest(name=name, lat=lat, lon=lon)
+    mapManager.addPointsOfInterest(poi)
+    return RedirectResponse("/admin", status_code=303)
+
+@router.post("/admin/delete-poi")
+async def delete_poi(id: str = Form(...)):
+    mapManager.deletePointsOfInterest(id)
+    return RedirectResponse("/admin", status_code=303)
+
+#And then we tell the app of a router obj
+app.include_router(router)

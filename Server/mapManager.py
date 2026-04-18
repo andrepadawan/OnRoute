@@ -22,6 +22,13 @@ class MapManager():
         data.append(POI)
         self.writePointsOfInterest(data)
 
+    def deletePointsOfInterest(self, id: str):
+        data = self.readPointsOfInterest()
+        for t in data:
+            if t.id == id:
+                data.remove(t)
+        self.writePointsOfInterest(data)
+
     def readPointsOfInterest(self) -> List[PointOfInterest]:
         try:
             with open(POI_FILE, "r") as f:

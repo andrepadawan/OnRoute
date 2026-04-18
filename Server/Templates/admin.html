@@ -11,27 +11,27 @@
             <h3>Turni</h3>
                 <div class="shift-table">
                     <nav class="horizontal-nav-bar">
-                    <button onclick="document.getElementById('add-dialog').showModal()">Add shift</button>
-                    <dialog id="add-dialog">
-                        <form method="post" action="/admin/add">
+                    <button onclick="document.getElementById('add-dialog-shift').showModal()">Add shift</button>
+                    <dialog id="add-dialog-shift">
+                        <form method="post" action="/admin/add-shift">
                             <label>Start date: <input type="date" name="start_date" required></label>
                             <label>Start time: <input type="time" name="start_time" required></label>
                             <label>End date: <input type="date" name="end_date" required></label>
                             <label>End time: <input type="time" name="end_time" required></label>
                             <button type="submit">Add</button>
-                            <button type="button" onclick="document.getElementById('add-dialog').close()">
+                            <button type="button" onclick="document.getElementById('add-dialog-shift').close()">
                                 Close
                             </button>
                         </form>
                     </dialog>
                 </nav>
                     <table class="table-shift">
-                    {% for t in data %}
+                    {% for t in shifts %}
                         <tr class="row-table">
                             <td>Da {{t.start.strftime('%d-%m-%Y alle %H:%M')}}
                                 al {{t.end.strftime('%d-%m-%Y alle %H:%M')}}</td>
                             <td><button class="modify" type="button"> Modify </button></td>
-                            <td><form method="post" action="/admin/delete">
+                            <td><form method="post" action="/admin/delete-shift">
                                 <input type="hidden" name="id" value="{{t.id}}">
                                 <button class="delete" type="submit"> Delete </button>
                             </form></td>
@@ -43,6 +43,43 @@
                             Il servizio sarà attivo negli orari specificati. <br>
                             Premere (...) per modificare, eliminare o aggiungere un turno
 
+                        </p>
+                    </div>
+            </div>
+            <h3>Punti di interesse</h3>
+                <div class="poi-table">
+                    <nav class="horizontal-nav-bar_POI">
+                    <button onclick="document.getElementById('add-dialog-poi').showModal()">Add POI</button>
+                    <dialog id="add-dialog-poi">
+                        <form method="post" action="/admin/add-poi">
+                            <label>Name: <input type="text" name="name" required></label>
+                            <label>Latitude: <input type="number" step="any" name="lat" required></label>
+                            <label>Longitude: <input type="number" step="any" name="lon" required></label>
+                            <button type="submit">Add</button>
+                            <button type="button" onclick="document.getElementById('add-dialog-poi').close()">
+                                Close
+                            </button>
+                        </form>
+                    </dialog>
+                </nav>
+                    <table class="table-poi">
+                    {% for t in poi %}
+                        <tr class="row-table-poi">
+                            <td>Name: {{t.name}}</td>
+                            <td>Latitude: {{t.lat}}</td>
+                            <td>Longitude: {{t.lon}}</td>
+                            <td><button class="modify" type="button"> Modify </button></td>
+                            <td><form method="post" action="/admin/delete-poi">
+                                <input type="hidden" name="id" value="{{t.id}}">
+                                <button class="delete" type="submit"> Delete </button>
+                            </form></td>
+                        </tr>
+                     {% endfor %}
+                </table>
+                    <div class="info">
+                        <p>
+                            I punti di interesse (partenza, arrivo, fermate) visibili sulla mappa. <br>
+                            Premere (...) per modificare, eliminare o aggiungere un turno
                         </p>
                     </div>
             </div>
