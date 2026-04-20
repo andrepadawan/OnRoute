@@ -39,6 +39,11 @@ class MapManager():
         except FileNotFoundError:
             return []
 
+    def returnPrimitiveTypeList(self) -> List[dict]:
+        data = self.readPointsOfInterest()
+        return _adapter.dump_python(data)
+
+
     def writePointsOfInterest(self, data: List[PointOfInterest]):
         with open(POI_FILE, "wb") as f:
             f.write(_adapter.dump_json(data))

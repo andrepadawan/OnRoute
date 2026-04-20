@@ -126,9 +126,13 @@ async def admin_page(request: Request):
     poi = mapManager.readPointsOfInterest()
     #shifts is list of Timeshifts{id, start, end}
     #giving back a UI with Jinja, passing the shifts
+    poi_json = mapManager.returnPrimitiveTypeList()
+    #necessary because the js in adminhtml uses, with Jinja, {{ | tojson }}, that relies on python's base
+    #model, not pydantic (PointOfInterests), giving errors
+
     return templates.TemplateResponse(request=request,
                                       name="admin.html",
-                                      context={"shifts":shifts, "poi":poi})
+                                      context={"shifts":shifts, "poi":poi, "poi_json":poi_json})
 
 
 @router.post("/admin/delete-shift")
