@@ -99,6 +99,7 @@
     </div>
 <script>
         var poi_map = null;
+        var popup = L.popup()
 
         function openPOIDialogue(){
             setTimeout(function () {
@@ -118,7 +119,7 @@
 
                      if(poi_list.length>0){
                           const coordPoi = poi_list.map(p => [p.lat, p.lon]);
-                        poi_map.fitBounds(coordPoi)
+                        poi_map.fitBounds(coordPoi, {padding: [10,10]})
                         poi_map.invalidateSize()
 
                      }
@@ -126,8 +127,16 @@
                      else {
                          poi_map.invalidateSize();
                      }
+                    poi_map.on('click', onMapClick)
             }, 200)
         }
+
+         function onMapClick(e) {
+             popup
+                 .setLatLng(e.latlng)
+                 .setContent(e.latlng.toString())
+                 .openOn(poi_map)
+         }
     </script>
 </body>
 </html>
