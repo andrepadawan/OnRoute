@@ -109,6 +109,10 @@
                              maxZoom: 19,
                              attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
                          }).addTo(poi_map)
+
+                        {% for t in poi %}
+                            var marker = L.marker(["{{t.lat}}","{{t.lon}}"]).addTo(poi_map);
+                        {% endfor %}
                     }
                      else {
                          poi_map.invalidateSize();
