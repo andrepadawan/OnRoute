@@ -83,8 +83,10 @@ _Lock = threading.Lock()
 #--------------------- Public endpoints (Map) -------------
 @app.get("/embed")
 async def embed(request: Request):
+    poi_json = mapManager.returnPrimitiveTypeList()
     return templates.TemplateResponse(request=request,
-                                      name='map.html')
+                                      name='map.html',
+                                      context={"poi_list":poi_json})
 
 
 #---------------------Updating coordinates endpoints
