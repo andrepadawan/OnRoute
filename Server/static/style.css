@@ -40,3 +40,9 @@
 body {
     background-color: #f0f2f5;
 }
+
+.dialog {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}

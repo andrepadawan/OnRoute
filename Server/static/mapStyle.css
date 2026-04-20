@@ -3,3 +3,10 @@
     height: 90vh;
 
 }
+
+#poi-map {
+    width: 40vh;
+    height: 40vh;
+    margin: 2vh;
+    margin-top: 2vh;
+}
