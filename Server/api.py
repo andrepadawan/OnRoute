@@ -181,3 +181,4 @@ async def delete_poi(id: str = Form(...)):
 
 #And then we tell the app of a router obj
 app.include_router(router)
+#
