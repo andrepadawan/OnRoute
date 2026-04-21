@@ -51,7 +51,7 @@ def authentication(credentials: Annotated[HTTPBasicCredentials, Depends(security
 router = APIRouter(dependencies=[Depends(authentication)])
 
 #--------------------Configuring file location for HTML and CSS----------------
-#telling FastAPI where the CSS at
+#telling FastAPI where the CSS & JS at
 app.mount("/static", StaticFiles(directory=Path(__file__).parent / "static"), name="static" )
 
 #telling Jinja where the HTML at
