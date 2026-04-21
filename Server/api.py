@@ -150,10 +150,21 @@ async def add_shift(start_date: str = Form(...),
                     start_time: str = Form(...),
                     end_date: str = Form(...),
                     end_time: str = Form(...)):
-    start = datetime.datetime.fromisoformat(f"{start_date}T{start_time}")
-    end = datetime.datetime.fromisoformat(f"{end_date}T{end_time}")
-    scheduleManager.insert_shift(start,end)
+    #def getIsoFormat(self, start_date: str, start_time: str, end_date: str, end_time: str) -> (datetime.datetime, datetime.datetime):
+    scheduleManager.insert_shift(*scheduleManager.getIsoFormat(start_date, start_time, end_date, end_time))
     return RedirectResponse("/admin", status_code=303)
+
+@router.post("/admin/modify-shift")
+async def modify_shift(start_date: str = Form(...),
+                       start_time: str = Form(...),
+                       end_date: str = Form(...),
+                       end_time: str = Form(...),
+                       id: str = Form(...)):
+
+        start, end = scheduleManager.getIsoFormat(start_date, start_time, end_date, end_time)
+        scheduleManager.modify_shift(id, start, end)
+        return RedirectResponse("/admin", status_code=303)
+
 
 @router.post("/admin/add-poi")
 async def add_poi(name: str = Form(...),

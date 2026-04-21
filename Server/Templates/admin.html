@@ -40,14 +40,36 @@
                         <tr class="row-table">
                             <td>Da {{t.start.strftime('%d-%m-%Y alle %H:%M')}}
                                 al {{t.end.strftime('%d-%m-%Y alle %H:%M')}}</td>
-                            <td><button class="modify" type="button"> Modify </button></td>
+                            <td>
+                                <button type="button" class="modify-shift-btn"
+                                                        data-id="{{t.id}}"
+                                                        data-start-date="{{t.start.strftime('%Y-%m-%d')}}"
+                                                        data-start-time="{{t.start.strftime('%H:%M')}}"
+                                                        data-end-date="{{t.end.strftime('%Y-%m-%d')}}"
+                                                        data-end-time="{{t.end.strftime('%H:%M')}}"
+                                                        >Modify</button>
+                            </td>
                             <td><form method="post" action="/admin/delete-shift">
                                 <input type="hidden" name="id" value="{{t.id}}">
                                 <button class="delete" type="submit"> Delete </button>
-                            </form></td>
+                                </form>
+                            </td>
                         </tr>
                      {% endfor %}
                 </table>
+                    <dialog id='modify-shift-dialogue'>
+                        <form method="post" action="/admin/modify-shift">
+                            <label>Start date: <input type="date" name="start_date" required></label>
+                            <label>Start time: <input type="time" name="start_time" required></label>
+                            <label>End date: <input type="date" name="end_date" required></label>
+                            <label>End time: <input type="time" name="end_time" required></label>
+                            <input type="hidden" name="id">
+                            <button type="submit">Modify</button>
+                            <button type="button" onclick="document.getElementById('modify-shift-dialogue').close()">
+                                            Close
+                            </button>
+                        </form>
+                    </dialog>
                     <div class="info">
                         <p>
                             Il servizio sarà attivo negli orari specificati. <br>
@@ -105,7 +127,6 @@
             setTimeout(function () {
                  if (poi_map==null) {
 
-//polygon.getBounds().getCenter();
                         poi_map = L.map('poi-map').setView([45.0703, 7.6869] , 15);
 
                          L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png',
@@ -145,6 +166,18 @@
                  .setContent(e.latlng.toString())
                  .openOn(poi_map)
          }
+
+         document.querySelectorAll('.modify-shift-btn').forEach(btn => { btn.addEventListener('click', () => {
+             const dialog = document.getElementById('modify-shift-dialogue');
+             dialog.querySelector('[name="start_date"]').value = btn.dataset.startDate;
+             dialog.querySelector('[name="start_time"]').value = btn.dataset.startTime;
+             dialog.querySelector('[name="end_date"]').value = btn.dataset.endDate;
+             dialog.querySelector('[name="end_time"]').value = btn.dataset.endTime;
+             dialog.querySelector('[name="id"]').value = btn.dataset.id
+             dialog.showModal();
+            });
+         })
+
 
     </script>
 </body>

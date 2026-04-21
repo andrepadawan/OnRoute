@@ -30,26 +30,7 @@ _adapter = TypeAdapter(List[Timeshifts])
 class ScheduleManager:
     def __init__(self):
         self._Lock = threading.Lock()
-        self._stop = threading.Event()
-        self._thread = None
         self.now = datetime.datetime.now()
-
-    def start(self):
-        #usual check if not already running
-        if self._thread is not None and self._thread.is_alive():
-            return
-
-        self._stop.clear()
-        self._thread = threading.Thread(target = self.check_timetable,
-            name = "ScheduleManager_thread",
-            daemon = True)
-
-
-    def stop(self):
-        self._stop.set()
-
-        if self._thread is not None and self._thread.is_alive():
-            self._thread.join(timeout = 5)
 
 
     def check_timetable(self) -> bool:
@@ -62,6 +43,7 @@ class ScheduleManager:
             if (self.now > t.start and self.now < t.end):
                 return True
         return False
+
 
     def _read_json_file(self) -> List[Timeshifts]:
 
@@ -79,20 +61,34 @@ class ScheduleManager:
         with open(TIMETABLE_FILE, "wb") as f:
                 f.write(_adapter.dump_json(data))
 
+
     def insert_shift(self, start: datetime, end: datetime):
         #creating a structure table to hold list of Timeshifts data type
         #check condition: start<end otherwise swap
-        if start>=end:
-            temp = end
-            end = start
-            start = temp
-
+        start, end = self._normalize_order(start, end)
         table = self._read_json_file()
         #using list methods to add a new shift to the file
         table.append(Timeshifts(start=start, end=end))
         table = self.order_shifts(table)
         #rewriting
         self._write_json_file(table)
+
+    def modify_shift(self, id: str, start: datetime, end: datetime):
+        start, end = self._normalize_order(start, end)
+
+        table = self._read_json_file()
+        for elem in table:
+            if elem.id == id:
+                elem.start = start; elem.end = end;
+                break
+        self._write_json_file(self.order_shifts(table))
+
+    def _normalize_order(self, start: datetime.datetime, end: datetime.datetime) -> (datetime.datetime, datetime.datetime):
+        if start>=end:
+            temp = end
+            end = start
+            start = temp
+        return start, end
 
 
     def delete_shift(self, id: str):
@@ -113,6 +109,11 @@ class ScheduleManager:
         return self._read_json_file()
 
 
+    def getIsoFormat(self, start_date: str, start_time: str, end_date: str, end_time: str)\
+            -> (datetime.datetime, datetime.datetime):
+        start = datetime.datetime.fromisoformat(f"{start_date}T{start_time}")
+        end = datetime.datetime.fromisoformat(f"{end_date}T{end_time}")
+        return start, end
 
 # For debug purposes only, for this module
 if __name__ == "__main__":
