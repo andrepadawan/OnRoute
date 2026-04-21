@@ -114,29 +114,38 @@
                              attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
                          }).addTo(poi_map)
 
+                        //Adding markers where our POI are, binding each one with its own name
                          var poi_list = {{ poi_json | tojson }};
                          poi_list.forEach( p => L.marker([p.lat, p.lon]).bindPopup(p.name).addTo(poi_map))
+
 
                      if(poi_list.length>0){
                           const coordPoi = poi_list.map(p => [p.lat, p.lon]);
                         poi_map.fitBounds(coordPoi, {padding: [10,10]})
-                        poi_map.invalidateSize()
+
+                         //Adding a listener
+                         poi_map.on('click', onMapClick)
+
+                         //Since Leafleat does not like having a hidden map in a dialogue
+                         poi_map.invalidateSize() //Forces map to recalculate tiles
 
                      }
                     }
                      else {
+                         //Dialogue already opened, map is alright. We only need to recalculate the size
                          poi_map.invalidateSize();
                      }
-                    poi_map.on('click', onMapClick)
             }, 200)
         }
 
+        //It shows the coordinates of where the click happens on the map
          function onMapClick(e) {
              popup
                  .setLatLng(e.latlng)
                  .setContent(e.latlng.toString())
                  .openOn(poi_map)
          }
+
     </script>
 </body>
 </html>
