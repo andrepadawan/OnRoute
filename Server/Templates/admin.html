@@ -84,19 +84,20 @@
             <h3>Punti di interesse</h3>
                 <div class="poi-table">
                     <nav class="horizontal-nav-bar_POI">
-                    <button onclick="document.getElementById('add-dialog-poi').showModal(); openPOIDialogue()">Add POI</button>
-                    <dialog id="add-dialog-poi">
-                        <form method="post" action="/admin/add-poi">
+                    <button class=("add-poi-btn") onclick="document.getElementById('dialogue-poi').showModal(); openPOIDialogue('add')">Add POI</button>
+                    <dialog id="dialogue-poi">
+                        <form method="post" action="">
                             <label>Name: <input type="text" name="name" required></label>
                             <label>Latitude: <input type="number" step="any" name="lat" required></label>
                             <label>Longitude: <input type="number" step="any" name="lon" required></label>
+                            <input type="hidden" name="id">
                             <button type="submit">Add</button>
-                            <button type="button" onclick="document.getElementById('add-dialog-poi').close()">
+                            <button type="button" onclick="document.getElementById('dialogue-poi').close()">
                                 Close
                             </button>
                         </form>
                         <div id="poi-map">
-                            </div>
+                        </div>
                     </dialog>
                 </nav>
                     <table class="table-poi">
@@ -105,7 +106,11 @@
                             <td>Name: {{t.name}}</td>
                             <td>Latitude: {{t.lat}}</td>
                             <td>Longitude: {{t.lon}}</td>
-                            <td><button class="modify" type="button"> Modify </button></td>
+                            <td><button class="modify-poi-btn" type="button"
+                                        data-name="{{t.name}}"
+                                        data-lat="{{t.lat}}"
+                                        data-lon="{{t.lon}}"
+                                        data-id="{{t.id}}"> Modify </button></td>
                             <td><form method="post" action="/admin/delete-poi">
                                 <input type="hidden" name="id" value="{{t.id}}">
                                 <button class="delete" type="submit"> Delete </button>
