@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="branding/onroute_logo_svg.svg" alt="OnRoute" width="280">
+  <img src="branding/onroute_logo_dark_svg.svg" alt="OnRoute" width="280">
 </p>
 
 Live GPS tracking for event shuttles. A Raspberry Pi with a GPS module posts its coordinates to a FastAPI server,
@@ -61,4 +61,4 @@ Work in progress. What's next, roughly in order:
 
 MIT.
 
-Made by [andrepadawan], a bachelor Computer Engineering student at Politecnico di Torino.
+Made by [andrepadawan](https://github.com/andrepadawan), a bachelor Computer Engineering student at Politecnico di Torino.

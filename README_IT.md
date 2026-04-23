@@ -1,24 +1,65 @@
-
+<p align="center">
+  <img src="branding/onroute_logo_dark_svg.svg" alt="OnRoute" width="280">
+</p>
 # Tracker GPS end-to-end con trasmissione live della posizione 
 
-Tracker GPS versatile, con la possibilità di programmare gli orari in cui trasmettere la posizione e di mostrarla su una
-mappa (standalone o embedded) comprensiva di POI, cursore
+Tracker GPS live per navette eventi. Un Raspberry con modulo GPS manda le sue coordinate a un server con FastAPI, che la mostra
+in una mappa Leaflet (standalone o embedded) comprensiva di POI (Punti di interesse). Un pannello di amministrazione (cui si accede dietro autenticazione)
+imposta gli orari in cui la posizione viene esposta sulle mappe e i POI. Fuori dagli orari impostati, la chiamata all'endpoint `/coordinates` risponde con 
+`notactive`, permettendo al dispositivo di rimanere acceso senza esporre la posizione.
+
+Versione inglese [README.md](README.md)
+
 ## Stack hardware
-Raspberry Pi Zero 2W o hardware più performante, Python 3.9, GPS, modulo gps, display, gpsd, flask, requests, fastapi.
+Raspberry Pi (Zero 2 W) + gpsd, Python 3.9, FastAPI, Pydantic v2, Jinja2, Leaflet 1.9. 
+Deployed on PythonAnywhere.
+HTTP Basic auth per l'amministratore, bearer token per il dispositivo.
 
-## Architettura
-RPI(Modulo gps) -> Python(gps_module e networking.py) -> Server(api.py, mapManager.py, scheduleManager.py)
--> mappa Web 
+##Layout
+```
+RPiGPS/      # device-side: gpsd reader + HTTP poster
+Server/      # FastAPI app, JSON persistence, admin templates + JS
+branding/    # logos
+```
 
-### Server
-La cartella Server contiene files con lo scopo di gestire le varie richieste get- e post-, cioé di gestire le coordinate
-in arrivo da RPiGPS, fornirle agli user, controllare l'orario di operatività e permettere l'amministrazione. 
-Per quest'ultima viene anche fornito un pannello Ui, /admin, a cui si accede tramite autenticazione e che permette, per via grafica
-di aggiungere turni e di eliminarli.
+## Setup e installazione
 
-L'implementazione dell'autenticazione è avvenuta tramite secrets, mentre per garantire che **tutte** le operazioni di amministrazione avvenissero solo dietro autenticazione si è scelto APIRouter, 
-che permette di impostare una dipendenza: su un **intero** gruppo di endpoint.
-## Setup and installation
+Server, in locale:
+
+```bash
+python -m venv .venv && source .venv/bin/activate
+pip install -r requirements.txt
+cp Server/.env.example Server/.env   # fill in values
+cd Server && uvicorn api:app --reload
+```
+
+Compilare: `ADMIN_USERNAME`, `ADMIN_PASSWORD`, `DEVICE_TOKEN`, e `ENV` (`development` mostra `/docs`).
+Il pannello admin si trova all'endpoint `/admin`, la mappa pubblica a `/embed`.
+
+Dispositivo:
+
+```bash
+cd RPiGPS
+cp .env.example .env   # set URL_SITO_GPS + DEVICE_TOKEN
+python networking.py
+```
+
+Su Mac non c'è `gpsd`, con `ENV=development` il codice legge `mock_gps_coordinates.txt` per questioni di debug.
+
 
 ## Project status
-In progress
+Ancora in corso.
+Seguirann:
+
+- UI polish (il pannello admin sembra un blog del 1997)
+- ruff + PEP 8 cleanup 
+- LED su Pi (attivo / disattivato)
+- Led su admin accanto al turno attivo
+- Test per le classi python
+- App android
+
+## License
+
+MIT.
+
+Fatto da [andrepadawan](https://github.com/andrepadawan), studente triennale di Computer Engineering al Politecnico di Torino.
