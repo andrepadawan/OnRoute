@@ -23,6 +23,7 @@ load_dotenv()
 # -make it pretty
 # - aggiungere status LED per vedere quando il servizio è attivo e quando no
 # - possibility to add POI via admin page, using Leafleet(?) or bare coordinates
+# - implementing modify-poi
 
 
 #Documentation will be unavailable in production for safety reasons: reading the .env
@@ -160,7 +161,6 @@ async def modify_shift(start_date: str = Form(...),
                        end_date: str = Form(...),
                        end_time: str = Form(...),
                        id: str = Form(...)):
-
         start, end = scheduleManager.getIsoFormat(start_date, start_time, end_date, end_time)
         scheduleManager.modify_shift(id, start, end)
         return RedirectResponse("/admin", status_code=303)
@@ -172,6 +172,15 @@ async def add_poi(name: str = Form(...),
                   lon: float = Form(...)):
     poi = PointOfInterest(name=name, lat=lat, lon=lon)
     mapManager.addPointsOfInterest(poi)
+    return RedirectResponse("/admin", status_code=303)
+
+@router.post("/admin/modify-poi")
+async def modify_poi(name: str = Form(...),
+                  lat: float = Form(...),
+                  lon: float = Form(...),
+                     id: str = Form(...)):
+    #Implement
+    mapManager.modifyPointsOfInterest(id, name, lat, lon)
     return RedirectResponse("/admin", status_code=303)
 
 @router.post("/admin/delete-poi")

@@ -29,6 +29,15 @@ class MapManager():
                 data.remove(t)
         self.writePointsOfInterest(data)
 
+    def modifyPointsOfInterest(self, id: str, name: str, lat: float, lon: float):
+        data = self.readPointsOfInterest()
+        for t in data:
+            if t.id == id:
+                t.name = name
+                t.lat = lat
+                t.lon = lon
+        self.writePointsOfInterest(data)
+
     def readPointsOfInterest(self) -> List[PointOfInterest]:
         try:
             with open(POI_FILE, "r") as f:

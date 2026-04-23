@@ -84,15 +84,15 @@
             <h3>Punti di interesse</h3>
                 <div class="poi-table">
                     <nav class="horizontal-nav-bar_POI">
-                    <button class=("add-poi-btn") onclick="document.getElementById('dialogue-poi').showModal(); openPOIDialogue('add')">Add POI</button>
+                    <button class="add-poi-btn" onclick="document.getElementById('dialogue-poi'); openPOIDialogue('add')">Add POI</button>
                     <dialog id="dialogue-poi">
                         <form method="post" action="">
                             <label>Name: <input type="text" name="name" required></label>
                             <label>Latitude: <input type="number" step="any" name="lat" required></label>
                             <label>Longitude: <input type="number" step="any" name="lon" required></label>
                             <input type="hidden" name="id">
-                            <button type="submit">Add</button>
-                            <button type="button" onclick="document.getElementById('dialogue-poi').close()">
+                            <button type="submit" class="add-modify-poi-btn">Invia</button>
+                            <button type="button" onclick="closePOIDialogue()">
                                 Close
                             </button>
                         </form>
