@@ -34,13 +34,13 @@ cd Server && uvicorn api:app --reload
 ```
 
 Compilare: `ADMIN_USERNAME`, `ADMIN_PASSWORD`, `DEVICE_TOKEN`, e `ENV` (`development` mostra `/docs`).
-Il pannello admin si trova all'endpoint `/admin`, la mappa pubblica a `/embed`.
+Il pannello admin si trova nell'endpoint `/admin`, la mappa pubblica in `/embed`.
 
 Dispositivo:
 
 ```bash
 cd RPiGPS
-cp .env.example .env   # set URL_SITO_GPS + DEVICE_TOKEN
+cp .env.example .env   # inserire URL_SITO_GPS + DEVICE_TOKEN
 python networking.py
 ```
 
@@ -49,9 +49,9 @@ Su Mac non c'è `gpsd`, con `ENV=development` il codice legge `mock_gps_coordina
 
 ## Project status
 Ancora in corso.
-Seguirann:
+Seguiranno:
 
-- UI polish (il pannello admin sembra un blog del 1997)
+- Miglioramenti UI (il pannello admin sembra un blog del 1997)
 - ruff + PEP 8 cleanup 
 - LED su Pi (attivo / disattivato)
 - Led su admin accanto al turno attivo

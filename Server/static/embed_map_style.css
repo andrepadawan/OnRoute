@@ -1,0 +1,24 @@
+#map {
+    width: 90vw;
+    height: 90vh;
+}
+
+body{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    font-family: 'EB Garamond', Garamond, 'Times New Roman', serif;
+}
+
+#showable-content{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    max-height: 70lvh;
+    max-width: 70lvh;
+}
+
+.general-content-debug{
+    min-height: 10lvh;
+    background-color: lightblue;
+}

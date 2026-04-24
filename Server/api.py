@@ -86,7 +86,7 @@ _Lock = threading.Lock()
 async def embed(request: Request):
     poi_json = mapManager.returnPrimitiveTypeList()
     return templates.TemplateResponse(request=request,
-                                      name='map.html',
+                                      name='embed_map.html',
                                       context={"poi_list":poi_json})
 
 

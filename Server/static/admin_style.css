@@ -46,3 +46,10 @@ body {
     flex-direction: column;
     justify-content: space-between;
 }
+
+#poi-map {
+    width: 35vw;
+    height: 40vh;
+    margin: 2vh;
+    margin-top: 2vh;
+}
