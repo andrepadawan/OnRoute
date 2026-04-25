@@ -51,6 +51,7 @@ On macOS there's no `gpsd`, so if you set `ENV=development` the device reads fro
 
 Work in progress. What's next, roughly in order:
 
+- cursor on map showing shuttle’s position (needs gps orientation)
 - modify-POI endpoint and a bit of UI polish (ugly af rn)
 - ruff + PEP 8 cleanup (some method names are camelCase from early commits)
 - LED status on the Pi (service active / idle)

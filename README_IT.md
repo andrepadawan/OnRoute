@@ -51,6 +51,8 @@ Su Mac non c'è `gpsd`, con `ENV=development` il codice legge `mock_gps_coordina
 Ancora in corso.
 Seguiranno:
 
+
+- Cursore che mostra posizione navetta (necessario orientamento da gps)
 - Miglioramenti UI (il pannello admin sembra un blog del 1997)
 - ruff + PEP 8 cleanup 
 - LED su Pi (attivo / disattivato)
