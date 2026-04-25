@@ -16,8 +16,10 @@ class GpsReader:
         self.latitude = 0.0
         self.longitude = 0.0
         self.speed = 0.0
+        self.track = 0.0 #track described from documentation as drift from true North
         #Quality of the signal:
         self.fix_status = gps.STATUS_FIX
+
         #Management variable: lock, threading and event management
         self._lock = threading.Lock()
         self._thread = None
@@ -57,9 +59,9 @@ class GpsReader:
             self.longitude = report["lon"]
             self.speed = report["speed"]
             self.fix_status = report["mode"]
-            
+            self.track = report["track"]
             #showing coordinates for debug purposes
-            logger.info(f"Coordinates: lat: {self.latitude}, lon: {self.longitude}, fix:{self.fix_status}")
+            logger.info(f"Coordinates: lat: {self.latitude}, lon: {self.longitude}, fix:{self.fix_status}, track:{self.track}")
 
     def gps_loop(self):
 
@@ -111,6 +113,3 @@ class GpsReader:
                 self.write_coordinates(report)
         else:
             return
-
-
-#For debug purposes only, for this module

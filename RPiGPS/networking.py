@@ -46,14 +46,16 @@ class Networking:
         if self._thread:
             self._thread.join(timeout=10)
 
-    def get_payload(self) -> json:
+    def get_payload(self) -> dict:
         if os.getenv("ENV") != "development":
+            #So I'm in production
             with self._lock:
                 coord = {
                     "lon":self.gps_module.longitude,
                     "lat":self.gps_module.latitude,
                     "speed":self.gps_module.speed,
-                    "fix_status":self.gps_module.fix_status
+                    "fix_status":self.gps_module.fix_status,
+                    "track":self.gps_module.track
                 }
             return coord
         else:
@@ -67,11 +69,14 @@ class Networking:
         session = requests.session()
 
         session.headers.update(
+            #Standard sentence
             {"Authorization": f"Bearer {self.device_token}",
+             #Content type ->   automatically set as app.../json if json=dict in requests.post
               "Content-Type": "application/json"})
         
         while not self._stop_event.is_set():
             try:
+                #requests (session) automatically serializes a dict into json string
                 session.post(self.url_site, json = self.get_payload(), timeout=5)
             
             except requests.exceptions.ConnectionError:
@@ -92,6 +97,7 @@ class Networking:
         session.close()
 
 
+#DEBUG only
 if __name__ == "__main__":
     sender = Networking()
     sender.start()
