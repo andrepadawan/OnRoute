@@ -1,7 +1,8 @@
 var map = null;
 var shuttleIcon = null;
 var poi_list = null;
-var markers = new Map()
+var markers = new Map();
+let shuttle = null
 
 function map_init(){
          map = L.map('map').setView([45.0703, 7.6869], 15);
@@ -10,16 +11,19 @@ function map_init(){
         attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
             }).addTo(map);
         read_poi()
+        icons_init()
+        showLivePosition()
         map.invalidateSize()
-
 }
 
 function icons_init(){
     shuttleIcon = L.divIcon({
-        className:'shuttle-div-icon'
+        className:'shuttle-div-icon',
+        iconSize: [20, 20],
+        html: '<div class="shuttle-dot"></div>'
     })
-
 }
+
 
 function read_poi() {
     poi_list = JSON.parse(document.getElementById('poi-data').textContent);
@@ -38,3 +42,8 @@ function read_poi() {
                  map.invalidateSize() //Forces map to recalculate tiles
              }
          }
+
+function showLivePosition() {
+    coords_list = JSON.parse(document.getElementById('coords').textContent);
+    shuttle = L.marker([45.0703, 7.6869], {icon:shuttleIcon}).addTo(map)
+}

@@ -22,3 +22,18 @@ body{
     min-height: 10lvh;
     background-color: lightblue;
 }
+
+.leaflet-div-icon {
+  background: transparent;
+  border: none;
+}
+
+.shuttle-dot{
+    height: 16px;
+    width: 16px;
+    border-width: 4px;
+    border-style: solid;
+    border-radius: 100%;
+    border-color: whitesmoke;
+    background-color: royalblue;
+}
