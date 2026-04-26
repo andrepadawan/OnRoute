@@ -9,7 +9,7 @@ from fastapi.templating import Jinja2Templates
 from fastapi.staticfiles import StaticFiles
 from fastapi.security import HTTPBasic, HTTPBasicCredentials
 from pydantic import BaseModel
-from typing import Annotated
+from typing import Annotated, Optional
 from pathlib import Path
 from dotenv import load_dotenv
 
@@ -67,11 +67,13 @@ class PayloadReceived(BaseModel):
     lat: float = 0.0
     speed: float = 0.0
     fix_status: int = 0
+    track: float = 0.0
 
 class Coordinates(BaseModel):
     lon: float = 0.0
     lat: float = 0.0
     speed: float = 0.0
+    track: Optional[float] = None
     info: str = "notactive"
 
 
@@ -87,7 +89,7 @@ async def embed(request: Request):
     poi_json = mapManager.returnPrimitiveTypeList()
     return templates.TemplateResponse(request=request,
                                       name='embed_map.html',
-                                      context={"poi_list":poi_json})
+                                      context={"poi_json":poi_json, "coords":lastCoordinates.model_dump()})
 
 
 #---------------------Updating coordinates endpoints
@@ -110,12 +112,18 @@ async def get_coordinates():
 @app.post("/update-coordinates")
 async def update_coordinates(coords: PayloadReceived, authorization: str = Header(None)):
     #receives from Raspberry
-    if authorization != f"Bearer {os.getenv('DEVICE_TOKEN')}":
+    if secrets.compare_digest(authorization, f"Bearer {os.getenv('DEVICE_TOKEN')}"):
         raise HTTPException(status_code=401, detail="Unauthorized")
     with _Lock:
         lastCoordinates.lon = coords.lon
         lastCoordinates.lat = coords.lat
         lastCoordinates.speed = coords.speed
+        """ Consideration: at low speeds or at a stop the orientation
+         produces errors. Only registering the track if the speed is higher than 0.5km/h
+         (0,14 m/s -> rounded and raised at 0,3 m/s for gps jitter), otherwise keep the previous data.
+        """
+        if coords.speed > 0.3 and coords.track is not None:#m/s
+            lastCoordinates.track = coords.track
         lastCoordinates.info = "active"
 
 #------------------administration section -----------------

@@ -16,7 +16,8 @@ class GpsReader:
         self.latitude = 0.0
         self.longitude = 0.0
         self.speed = 0.0
-        self.track = 0.0 #track described from documentation as drift from true North
+        self.track = None #track described from documentation as drift from true North
+        #Can be none if module cannot calculate it -> 0.0 as std would be wrong
         #Quality of the signal:
         self.fix_status = gps.STATUS_FIX
 
