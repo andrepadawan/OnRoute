@@ -112,7 +112,7 @@ async def get_coordinates():
 @app.post("/update-coordinates")
 async def update_coordinates(coords: PayloadReceived, authorization: str = Header(None)):
     #receives from Raspberry
-    if secrets.compare_digest(authorization, f"Bearer {os.getenv('DEVICE_TOKEN')}"):
+    if not secrets.compare_digest(authorization, f"Bearer {os.getenv('DEVICE_TOKEN')}"):
         raise HTTPException(status_code=401, detail="Unauthorized")
     with _Lock:
         lastCoordinates.lon = coords.lon

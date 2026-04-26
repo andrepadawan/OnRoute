@@ -110,4 +110,4 @@ if __name__ == "__main__":
         print("\nStop.")
 
     finally:
-        reader.stop()
+        sender.stop()
