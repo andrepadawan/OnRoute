@@ -1,5 +1,5 @@
 import os
-import datetime
+from datetime import datetime, timezone
 import threading
 import secrets
 
@@ -68,13 +68,15 @@ class PayloadReceived(BaseModel):
     speed: float = 0.0
     fix_status: int = 0
     track: float = 0.0
+    timestamp: datetime = None
 
 class Coordinates(BaseModel):
     lon: float = 0.0
     lat: float = 0.0
     speed: float = 0.0
     track: Optional[float] = None
-    info: str = "notactive"
+    is_active: bool = False
+    timestamp: Optional[datetime] = None
 
 
 scheduleManager = ScheduleManager()
@@ -89,7 +91,7 @@ async def embed(request: Request):
     poi_json = mapManager.returnPrimitiveTypeList()
     return templates.TemplateResponse(request=request,
                                       name='embed_map.html',
-                                      context={"poi_json":poi_json, "coords":lastCoordinates.model_dump()})
+                                      context={"poi_json":poi_json, "coords":lastCoordinates.model_dump(mode='json')})
 
 
 #---------------------Updating coordinates endpoints
@@ -104,10 +106,10 @@ async def get_coordinates():
             return lastCoordinates
     else:
         with _Lock:
-            lastCoordinates.info = "notactive"
+            # Not sending live location: outside of shift hours
+            lastCoordinates.is_active = False
             return lastCoordinates
 
-    #Not sending live location: outside of shift hours
 
 @app.post("/update-coordinates")
 async def update_coordinates(coords: PayloadReceived, authorization: str = Header(None)):
@@ -124,7 +126,8 @@ async def update_coordinates(coords: PayloadReceived, authorization: str = Heade
         """
         if coords.speed > 0.3 and coords.track is not None:#m/s
             lastCoordinates.track = coords.track
-        lastCoordinates.info = "active"
+        lastCoordinates.is_active = True
+        lastCoordinates.timestamp = coords.timestamp
 
 #------------------administration section -----------------
 # Router works here: its dependency with auth allows modifications only to be

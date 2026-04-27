@@ -5,6 +5,7 @@ import json
 import threading
 import logging
 import time
+from datetime import datetime, timezone
 from dotenv import load_dotenv
 from gps_module import GpsReader
 
@@ -26,6 +27,7 @@ class Networking:
             with open("mock_gps_coordinates.txt", "r") as f:
                 for line in f:
                     self._mock_dict_track.append(json.loads(line))
+                    #{**original_dict, "new_key": value}
                 self._mock_iter = itertools.cycle(self._mock_dict_track)
 
         self._thread = None
@@ -62,13 +64,15 @@ class Networking:
                     "lat":self.gps_module.latitude,
                     "speed":self.gps_module.speed,
                     "fix_status":self.gps_module.fix_status,
-                    "track":self.gps_module.track
+                    "track":self.gps_module.track,
+                    "time_of_acquisition":datetime.now(timezone.utc).isoformat()
                 }
             return coord
         else:
             #Going through another element of my cycle iterator
             logger.info(f"Mock coordinates sent")
-            return next(self._mock_iter)
+            copy = {**next(self._mock_iter), "timestamp":datetime.now(timezone.utc).isoformat()}
+            return copy
 
 
     def send_coord_loop(self):

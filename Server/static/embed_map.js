@@ -17,9 +17,17 @@ function map_init(){
             }).addTo(map);
         map.scrollWheelZoom.disable();
         map.invalidateSize()
+        //Map operations finished
+        coords_dict = JSON.parse(document.getElementById('coords').textContent);
         read_poi()
         icons_init()
-        shuttle_marker_init()
+        if(check_timetable()){
+            shuttle_marker_init()
+        } else {
+            //blur the map
+
+        }
+
 }
 
 function icons_init(){
@@ -74,10 +82,28 @@ window.addEventListener('load', function () {
 });
 
 function shuttle_marker_init(){
-    coords_dict = JSON.parse(document.getElementById('coords').textContent);
     shuttle = L.marker([coords_dict['lat'], coords_dict['lon']], {icon:shuttleIcon}).addTo(map)
 }
 
 function update_position(coords_dict){
-    shuttle.setLatLng([coords_dict['lat'], coords_dict['lon']])
+    if(check_timetable()){
+        if(map.hasLayer(shuttle)){//all ok
+            shuttle.setLatLng([coords_dict['lat'], coords_dict['lon']])
+        } else {
+            shuttle_marker_init()//off to on case
+            shuttle.setLatLng([coords_dict['lat'], coords_dict['lon']])
+        }
+    } else {
+        if(map.hasLayer(shuttle)){//on to off
+            map.removeLayer(shuttle)
+        }
+    }
+}
+
+function check_timetable(){
+    if(coords_dict['is_active'] === false){
+        return false
+    } else {
+        return true
+    }
 }

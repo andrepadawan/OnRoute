@@ -61,8 +61,8 @@ class GpsReader:
             self.speed = report["speed"]
             self.fix_status = report["mode"]
             self.track = report["track"]
-            #showing coordinates for debug purposes
-            logger.info(f"Coordinates: lat: {self.latitude}, lon: {self.longitude}, fix:{self.fix_status}, track:{self.track}")
+            #I can use device time since this function only triggered if fix>=2d, valid TPV            #showing coordinates for debug purposes
+            logger.info(f"Coordinates: lat: {self.latitude}, lon: {self.longitude}, fix:{self.fix_status}, track:{self.track}, time:{self.time_of_acquisition}")
 
     def gps_loop(self):
 
