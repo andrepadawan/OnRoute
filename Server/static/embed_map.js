@@ -7,6 +7,10 @@ var coords_dict = null
 
 function map_init(){
          map = L.map('map').setView([45.0703, 7.6869], 15);
+         if (L.Browser.mobile) {
+             //Removing + - buttons on mobile
+            map.removeControl(map.zoomControl);
+        }
         L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
         maxZoom: 19,
         attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'

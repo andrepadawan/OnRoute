@@ -1,6 +1,7 @@
 #map {
     width: 90vw;
     height: 90vh;
+    border-radius: 10px;
 }
 
 body{
@@ -8,6 +9,15 @@ body{
     flex-direction: column;
     align-items: center;
     font-family: 'EB Garamond', Garamond, 'Times New Roman', serif;
+    background-color: beige;
+}
+
+.container{
+    display: flex;
+    flex-direction: row;
+    text-align: left;
+    justify-content: left;
+    padding-top: env(safe-area-inset-right, 1em);
 }
 
 #showable-content{
@@ -54,4 +64,13 @@ body{
 @keyframes pulse-ring {
   0%   { transform: scale(1);   opacity: 0.6; }
   100% { transform: scale(3);   opacity: 0;   }
+}
+
+/* Small devices */
+@media (max-width: 768px) {
+    #showable-content{
+    max-height: 100lvh;
+    max-width: 100lvh;
+    }
+
 }
