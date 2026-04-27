@@ -1,3 +1,4 @@
+import itertools
 import requests
 import os
 import json
@@ -20,7 +21,13 @@ class Networking:
         if os.getenv("ENV") != "development":
             self.gps_module = GpsReader()
         else:
+            self._mock_dict_track = []
             self.gps_module = None
+            with open("mock_gps_coordinates.txt", "r") as f:
+                for line in f:
+                    self._mock_dict_track.append(json.loads(line))
+                self._mock_iter = itertools.cycle(self._mock_dict_track)
+
         self._thread = None
         self._lock = threading.Lock()
         self._stop_event = threading.Event()
@@ -59,8 +66,9 @@ class Networking:
                 }
             return coord
         else:
-            with open("mock_gps_coordinates.txt", "r") as f:
-                return json.loads(f.read())
+            #Going through another element of my cycle iterator
+            logger.info(f"Mock coordinates sent")
+            return next(self._mock_iter)
 
 
     def send_coord_loop(self):
@@ -77,7 +85,9 @@ class Networking:
         while not self._stop_event.is_set():
             try:
                 #requests (session) automatically serializes a dict into json string
-                session.post(self.url_site, json = self.get_payload(), timeout=5)
+                payload = self.get_payload()
+                logger.info(f"Payload: {payload}")
+                session.post(self.url_site, json = payload, timeout=5)
             
             except requests.exceptions.ConnectionError:
                 
@@ -92,7 +102,7 @@ class Networking:
                 logger.info(f"Errore imprevisto: {e}")
             
             #Waiting using .wait so our function still responds to stop events
-            self._stop_event.wait(10)
+            self._stop_event.wait(8)
 
         session.close()
 
