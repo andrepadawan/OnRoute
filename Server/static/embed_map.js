@@ -4,6 +4,7 @@ var poi_list = null;
 var markers = new Map();
 let shuttle = null
 var coords_dict = null
+var map_wrapper = document.querySelector(".map-wrapper")
 
 function map_init(){
          map = L.map('map').setView([45.0703, 7.6869], 15);
@@ -19,6 +20,7 @@ function map_init(){
         map.invalidateSize()
         //Map operations finished
         coords_dict = JSON.parse(document.getElementById('coords').textContent);
+        map_wrapper.classList.toggle('service-off', !check_timetable());
         read_poi()
         icons_init()
         if(check_timetable()){
@@ -87,14 +89,16 @@ function shuttle_marker_init(){
 
 function update_position(coords_dict){
     if(check_timetable()){
-        if(map.hasLayer(shuttle)){//all ok
+        map_wrapper.classList.toggle('service-off', !check_timetable());
+        if(shuttle && map.hasLayer(shuttle)){//all ok
             shuttle.setLatLng([coords_dict['lat'], coords_dict['lon']])
         } else {
             shuttle_marker_init()//off to on case
             shuttle.setLatLng([coords_dict['lat'], coords_dict['lon']])
         }
     } else {
-        if(map.hasLayer(shuttle)){//on to off
+        map_wrapper.classList.toggle('service-off', !check_timetable());
+        if(shuttle&&map.hasLayer(shuttle)){//on to off
             map.removeLayer(shuttle)
         }
     }
