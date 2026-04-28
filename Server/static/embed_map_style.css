@@ -1,6 +1,6 @@
 #map {
     width: 90vw;
-    height: 90vh;
+    height: 80vh;
     border-radius: 10px;
 }
 
@@ -17,7 +17,7 @@ body{
     flex-direction: row;
     text-align: left;
     justify-content: left;
-    padding-top: env(safe-area-inset-right, 1em);
+    padding-top: env(safe-area-inset-right, 2em);
 }
 
 .map-wrapper{
