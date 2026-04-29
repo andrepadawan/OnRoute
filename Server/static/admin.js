@@ -107,7 +107,7 @@
  }
 
 
-         document.querySelectorAll('modify-shift-btn').forEach(btn => { btn.addEventListener('click', () => {
+         document.querySelectorAll('[data-action="modify-shift"]').forEach(btn => { btn.addEventListener('click', () => {
              const dialog = document.getElementById('modify-shift-dialogue');
              dialog.querySelector('[name="start_date"]').value = btn.dataset.startDate;
              dialog.querySelector('[name="start_time"]').value = btn.dataset.startTime;
