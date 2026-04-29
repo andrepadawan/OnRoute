@@ -1,0 +1,23 @@
+:root{
+    /*Colors*/
+    --color-primary-onroute: #0A1929;
+    --color-bg: #f1f5fa;
+    --color-surface: #e5e9ec;
+    --color-border: var(--color-primary-onroute);
+    --color-text-dark:#070c13;
+    --color-text-light: #e4e6e4;
+    --color-overlay-bg: rgba(255,255,255,0.3);
+    --secondary: #c9c3b2;
+    --accent: #cf9977;
+    --color-marker-map: #1D2D88;
+
+
+    /*Radius*/
+    --border-radius-map: 10px;
+    --border-radius-btn: 2px;
+
+    /*Fonts*/
+    --font-family: 'EB Garamond', Garamond, 'Times New Roman', serif;
+    --font-display:'Inter';
+    --font-body:'system-ui';
+}

@@ -22,26 +22,23 @@ function map_init(){
         coords_dict = JSON.parse(document.getElementById('coords').textContent);
         map_wrapper.classList.toggle('service-off', !check_timetable());
 
+        read_poi()
+        icons_init()
         map.on('movestart zoomstart', function() {
-        const el = shuttle.getElement()
-            if(shuttle && map.hasLayer(shuttle)) {
-                el.classList.remove('is-animated')
-            }
+                if(shuttle && map.hasLayer(shuttle)) {
+                    const el = shuttle.getElement()
+                    el.classList.remove('is-animated')
+                }
         })
 
         map.on('moveend zoomend', function() {
-        const el = shuttle.getElement()
-        if(shuttle && map.hasLayer(shuttle)) {
-                el.classList.add('is-animated')
+                if(shuttle && map.hasLayer(shuttle)) {
+                    const el = shuttle.getElement()
+                    el.classList.add('is-animated')
             }
         })
-        read_poi()
-        icons_init()
-        if(check_timetable()){
+         if(check_timetable()){
             shuttle_marker_init()
-        } else {
-            //blur the map
-
         }
 
 }
