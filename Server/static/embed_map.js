@@ -21,6 +21,20 @@ function map_init(){
         //Map operations finished
         coords_dict = JSON.parse(document.getElementById('coords').textContent);
         map_wrapper.classList.toggle('service-off', !check_timetable());
+
+        map.on('movestart zoomstart', function() {
+        const el = shuttle.getElement()
+            if(shuttle && map.hasLayer(shuttle)) {
+                el.classList.remove('is-animated')
+            }
+        })
+
+        map.on('moveend zoomend', function() {
+        const el = shuttle.getElement()
+        if(shuttle && map.hasLayer(shuttle)) {
+                el.classList.add('is-animated')
+            }
+        })
         read_poi()
         icons_init()
         if(check_timetable()){
@@ -85,6 +99,9 @@ window.addEventListener('load', function () {
 
 function shuttle_marker_init(){
     shuttle = L.marker([coords_dict['lat'], coords_dict['lon']], {icon:shuttleIcon}).addTo(map)
+    //Adding listener to disable css transformation while zooming map
+    shuttle.getElement().classList.add('is-animated')
+
 }
 
 function update_position(coords_dict){
@@ -111,3 +128,4 @@ function check_timetable(){
         return true
     }
 }
+
