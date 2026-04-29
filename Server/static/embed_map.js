@@ -24,6 +24,7 @@ function map_init(){
 
         read_poi()
         icons_init()
+
         map.on('movestart zoomstart', function() {
                 if(shuttle && map.hasLayer(shuttle)) {
                     const el = shuttle.getElement()
@@ -40,7 +41,6 @@ function map_init(){
          if(check_timetable()){
             shuttle_marker_init()
         }
-
 }
 
 function icons_init(){

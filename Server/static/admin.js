@@ -34,16 +34,15 @@
         function closePOIDialogue(){
             const dialogue = document.getElementById('dialogue-poi')
             const form = dialogue.querySelector('form')
-
             form.reset()
-            poi_map.closePopup()
+            poi_map?.closePopup()
             dialogue.close()
         }
 
         function setAddMode(){
             const dialogue = document.getElementById('dialogue-poi')
             const form = dialogue.querySelector('form')
-            const button = form.querySelector('.add-modify-poi-btn')
+            const button = document.querySelector('[data-action="add-poi"]')
             form.reset()
             form.action = '/admin/add-poi'
             button.textContent = 'Add'
@@ -53,7 +52,7 @@
         function setModifyMode(data){
             const dialogue = document.getElementById('dialogue-poi')
             const form = dialogue.querySelector('form')
-            const button = form.querySelector('.add-modify-poi-btn')
+            const button = form.querySelector('[data-action="modify-poi"]')
             form.action = '/admin/modify-poi'
             button.textContent = 'Modify'
             form.querySelector('[name="name"]').value = data.name
@@ -108,7 +107,7 @@
  }
 
 
-         document.querySelectorAll('.modify-shift-btn').forEach(btn => { btn.addEventListener('click', () => {
+         document.querySelectorAll('modify-shift-btn').forEach(btn => { btn.addEventListener('click', () => {
              const dialog = document.getElementById('modify-shift-dialogue');
              dialog.querySelector('[name="start_date"]').value = btn.dataset.startDate;
              dialog.querySelector('[name="start_time"]').value = btn.dataset.startTime;
@@ -119,7 +118,7 @@
             });
          })
 
-        document.querySelectorAll('.modify-poi-btn').forEach(btn => { btn.addEventListener('click', () => {
+        document.querySelectorAll('[data-action="modify-poi"]').forEach(btn => { btn.addEventListener('click', () => {
              const dialogue = document.getElementById('dialogue-poi');
              openPOIDialogue('modify', btn.dataset)})
         });

@@ -54,6 +54,8 @@ router = APIRouter(dependencies=[Depends(authentication)])
 #--------------------Configuring file location for HTML and CSS----------------
 #telling FastAPI where the CSS & JS at
 app.mount("/static", StaticFiles(directory=Path(__file__).parent / "static"), name="static" )
+app.mount("/branding", StaticFiles(directory=Path(__file__).parent.parent / "branding"), name="branding" )
+
 
 #telling Jinja where the HTML at
 templates = Jinja2Templates(Path(__file__).parent / "Templates")
