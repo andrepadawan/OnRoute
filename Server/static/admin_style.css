@@ -1,55 +1,139 @@
-.content{
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-}
-
-.row-table {
-    align-content: center;
-    padding: 4px;
-    gap: 10px;
-}
-
-.admin-page {
-    text-align: center;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-}
-
-.add-dialog {
-    justify-content: right;
-    margin-bottom: 10px;
-    margin-top: 10px;
-}
-
-.table-shift {
-    border-width: 1px;
-    border-color: cornflowerblue;
-    border-style: solid;
-    border-radius: 2px;
-    background-color: color-mix(in oklab, color-mix(in oklab, cornflowerblue 70%, lightblue), whitesmoke 70%)}
-
-.horizontal-nav-bar {
-    display: flex;
-    justify-content: flex-end;
-    margin: 4px;
-}
-
 body {
-    background-color: #f0f2f5;
-}
-
-.dialog {
     display: flex;
     flex-direction: column;
     justify-content: space-between;
+    align-items: center;
+    background-color: var(--color-bg);
+    font-family: Inter;
 }
 
-#poi-map {
-    width: 35vw;
-    height: 40vh;
-    margin: 2vh;
-    margin-top: 2vh;
+header{
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    padding: var(--space-4) var(--space-5);
+}
+
+.brand{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    margin-left: var(--space-3);
+    gap: var(--space-1);
+}
+
+.brand-logo{
+    height: 32px;
+    width: auto;
+    display: block;
+}
+
+.brand-tag{
+    font-size: 0.75rem;
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--color-text-muted);
+}
+
+/* Pill component */
+.pill{
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
+    padding: var(--space-2) var(--space-4);
+    border-radius: 999px;
+    font-size: 0.875rem;
+    font-weight: 500;
+    line-height: 1;
+    margin-right: var(--space-5);
+}
+
+.pill-dot{
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    flex-shrink: 0;
+}
+
+.pill--success{
+    background: var(--color-success-bg);
+    color: var(--color-success);
+}
+
+.pill--success .pill-dot{
+    background: var(--color-success);
+}
+
+.card-container{
+    width: 50vw;
+
+}
+
+.card{
+    width: 100%;
+    border-radius: var(--border-radius-card);
+    border: var(--border-width-1) solid var(--color-border-soft);
+    background-color: var(--color-surface);
+    margin: var(--space-4);
+}
+
+.card-header{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    padding: var(--space-5);
+    font-size: var(--font-size-2);
+    font-weight: 700;
+}
+
+.card-footer{
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    padding: var(--space-4);
+    color: var(--color-text-light);
+    font-style: italic;
+
+}
+
+.card-list-row {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    align-items: center;
+
+}
+
+.button-strip{
+    display: flex;
+    flex-direction: row;
+    gap: var(--space-1);
+    margin: var(--space-2);
+}
+
+.btn{
+    border: 0;
+    cursor: pointer;
+    padding: var(--space-2) var(--space-4);
+    border-radius: var(--border-radius-lg);
+    font-family: Inter;
+    font-weight: 500;
+    transition: background-color 120ms ease,
+              transform 120ms ease,
+              box-shadow 120ms ease;
+}
+.btn:hover{
+    background: oklch(from var(--color-primary-onroute) calc(l + 0.05) c h);
+}
+.btn:active { transform: scale(0.97) }
+.btn-primary{
+    background-color: var(--color-primary-onroute);
+    color: whitesmoke;
+}
+.btn-secondary:hover{
+    background: oklch(from var(--color-text-light) calc(l + 0.05) c h);
 }

@@ -85,7 +85,6 @@ class Networking:
             {"Authorization": f"Bearer {self.device_token}",
              #Content type ->   automatically set as app.../json if json=dict in requests.post
               "Content-Type": "application/json"})
-        
         while not self._stop_event.is_set():
             try:
                 #requests (session) automatically serializes a dict into json string

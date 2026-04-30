@@ -1,25 +1,49 @@
 :root{
     /*Colors*/
     --color-primary-onroute: #0A1929;
-    --color-bg: #f1f5fa;
-    --color-surface: #e5e9ec;
+    --color-bg:#eceff1;
+    --color-surface: #f1f5fa;
     --color-border: var(--color-primary-onroute);
     --color-text-dark:#070c13;
-    --color-text-light: #e4e6e4;
+    --color-text-light: #989a98;
+    --color-text-muted: #64748B;
     --color-overlay-bg: rgba(255,255,255,0.3);
     --secondary: #c9c3b2;
     --accent: #cf9977;
     --color-marker-map: #1D2D88;
     --color-success:#2d8a48;
     --color-success-bg:#e8f3eb;
+    --color-border-soft:#E2E8F0;
 
 
     /*Radius*/
-    --border-radius-map: 10px;
-    --border-radius-btn: 2px;
+    --border-radius-sm: 2px;
+    --border-radius-md: 4px;
+    --border-radius-lg: 8px;
+    --border-radius-xl: 12px;
+    --border-radius-card: 36px;
 
     /*Fonts*/
     --font-family: 'EB Garamond', Garamond, 'Times New Roman', serif;
     --font-display:'Inter';
     --font-body:'system-ui';
+    --font-size-1: 9pt;
+    --font-size-2: 13pt;
+    --font-size-3: 17pt;
+
+    /*Spaces*/
+    --space-0: 0px;
+    --space-1: 4px;
+    --space-2: 8px;
+    --space-3: 12px;
+    --space-4: 16px;
+    --space-5: 24px;
+    --space-6: 32px;
+    --space-7: 48px;
+    --space-8: 64px;
+
+    /*Border width */
+    --border-width-1: 1px;
+
+
 }

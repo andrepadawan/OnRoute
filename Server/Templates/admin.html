@@ -28,82 +28,89 @@
 <body>
     <header>
         <div class="brand">
-            <img id="onroute-logo-dark" src="/branding/onroute_logo_dark_svg.svg">
-            <span>Admin</span>
-            </div>
-        <div class="status">
+            <img class="brand-logo" src="/branding/onroute_logo_dark_svg.svg" alt="OnRoute">
+            <span class="brand-tag">Admin</span>
+        </div>
+        <div class="pill pill--success">
+            <span class="pill-dot" aria-hidden="true"></span>
+            <span>Servizio attivo</span>
         </div>
     </header>
-    <div class="card">
-        <div class="card-header">
-            <span>Turni</span>
-            <button class="btn" data-action="add-shift" onclick="document.getElementById('add-dialog-shift').showModal()">Add shift</button>
-        </div>
-        <div class="card-body">
-            <ul class="card-list">
-                {% for t in shifts %}
-                    <li class="card-list-row">
-                        <span>Da {{t.start.strftime('%d-%m-%Y alle %H:%M')}}
-                            al {{t.end.strftime('%d-%m-%Y alle %H:%M')}}</span>
-                        <span>
-                            <button type="button" class="btn btn-secondary" data-action="modify-shift"
-                                                        data-id="{{t.id}}"
-                                                        data-start-date="{{t.start.strftime('%Y-%m-%d')}}"
-                                                        data-start-time="{{t.start.strftime('%H:%M')}}"
-                                                        data-end-date="{{t.end.strftime('%Y-%m-%d')}}"
-                                                        data-end-time="{{t.end.strftime('%H:%M')}}"
-                                                        >Modify</button>
-                        </span>
-                        <div>
-                            <form method="post" action="/admin/delete-shift">
-                            <input type="hidden" name="id" value="{{t.id}}">
-                            <button class="delete" type="submit"> Delete </button>
-                            </form>
-                        </div>
-                    </li>
-                {% endfor %}
-            </ul>
-        </div>
-        <div class="card-footer">
-                        <p>
-                            Il servizio sarà attivo negli orari specificati. <br>
-                            Premere (...) per modificare, eliminare o aggiungere un turno
-                        </p>
-                    </div>
-    </div>
-    <div class="card">
-        <div class="card-header">
-                    <span>Punti di interesse</span>
-                    <button class="btn-primary" data-action="add-poi" onclick="document.getElementById('dialogue-poi'); openPOIDialogue('add')">Add POI</button>
-        </div>
-        <div class="card-body">
-            <ul class="card-list">
-                    {% for t in poi %}
+    <main>
+        <div class="card-container">
+            <div class="card">
+            <div class="card-header">
+                <span>Turni</span>
+                <button class="btn btn-primary" data-action="add-shift" onclick="document.getElementById('add-dialog-shift').showModal()">Add shift</button>
+            </div>
+            <div class="card-body">
+                <ul class="card-list">
+                    {% for t in shifts %}
                         <li class="card-list-row">
-                            <span>{{t.name}}</span>
-                            <span>{{t.lat}}</span>
-                            <span>{{t.lon}}</span>
-                            <span><button class="btn btn-logo" data-action="modify-poi" type="button"
-                                        data-name="{{t.name}}"
-                                        data-lat="{{t.lat}}"
-                                        data-lon="{{t.lon}}"
-                                        data-id="{{t.id}}"> Modify </button></span>
-                            <div><form method="post" action="/admin/delete-poi">
-                                <input type="hidden" name="id" value="{{t.id}}">
-                                <button class="btn btn-secondary" type="submit"> Delete </button>
-                                </form>
+                            <span>Da {{t.start.strftime('%d-%m-%Y alle %H:%M')}}
+                                al {{t.end.strftime('%d-%m-%Y alle %H:%M')}}</span>
+                                <div class="button-strip">
+                                    <button type="button" class="btn btn-secondary" data-action="modify-shift"
+                                                            data-id="{{t.id}}"
+                                                            data-start-date="{{t.start.strftime('%Y-%m-%d')}}"
+                                                            data-start-time="{{t.start.strftime('%H:%M')}}"
+                                                            data-end-date="{{t.end.strftime('%Y-%m-%d')}}"
+                                                            data-end-time="{{t.end.strftime('%H:%M')}}"
+                                                            >Edit</button>
+                                    <div>
+                                        <form method="post" action="/admin/delete-shift">
+                                        <input type="hidden" name="id" value="{{t.id}}">
+                                        <button class="delete btn btn-secondary" type="submit"> Delete </button>
+                                        </form>
+                                    </div>
                             </div>
                         </li>
-                     {% endfor %}
-                    </ul>
+                    {% endfor %}
+                </ul>
+            </div>
+            <div class="card-footer">
+                            <p>
+                                Il servizio sarà attivo negli orari specificati. <br>
+                                Premere (...) per modificare, eliminare o aggiungere un turno
+                            </p>
+                        </div>
         </div>
-        <div class="card-footer">
-            <p>
-                I punti di interesse (partenza, arrivo, fermate) visibili sulla mappa. <br>
-                Premere (...) per modificare, eliminare o aggiungere un turno
-            </p>
+            <div class="card">
+            <div class="card-header">
+                        <span>Punti di interesse</span>
+                        <button class="btn btn-primary" data-action="add-poi" onclick="document.getElementById('dialogue-poi'); openPOIDialogue('add')">Add POI</button>
+            </div>
+            <div class="card-body">
+                <ul class="card-list">
+                        {% for t in poi %}
+                            <li class="card-list-row">
+                                <span>{{t.name}}</span>
+                                <span>{{t.lat}}</span>
+                                <span>{{t.lon}}</span>
+                                <div class="button-strip"> <button class="btn btn-secondary" data-action="modify-poi" type="button"
+                                            data-name="{{t.name}}"
+                                            data-lat="{{t.lat}}"
+                                            data-lon="{{t.lon}}"
+                                            data-id="{{t.id}}"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M9.5 2l2.5 2.5-7 7H2.5V9l7-7z" stroke="#2c333d" stroke-width="1.2" stroke-linejoin="round"></path></svg></button>
+                                    <div><form method="post" action="/admin/delete-poi">
+                                        <input type="hidden" name="id" value="{{t.id}}">
+                                        <button class="btn btn-secondary" type="submit"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M3 4h8M5.5 4V2.5h3V4M4 4l.5 7.5h5L10 4" stroke="#993333" stroke-width="1.2" stroke-linejoin="round"></path></svg></button>
+                                    </form>
+                                    </div>
+                                </div>
+                            </li>
+                         {% endfor %}
+                        </ul>
+            </div>
+            <div class="card-footer">
+                <p>
+                    I punti di interesse (partenza, arrivo, fermate) visibili sulla mappa. <br>
+                    Premere (...) per modificare, eliminare o aggiungere un turno
+                </p>
+            </div>
         </div>
-    </div>
+        </div>
+    </main>
     <script src="/static/admin.js"></script>
     <dialog id='modify-shift-dialogue'>
                         <form method="post" action="/admin/modify-shift">
@@ -137,7 +144,7 @@
             <label>Longitude: <input type="number" step="any" name="lon" required></label>
             <input type="hidden" name="id">
             <button type="submit" class="btn btn-secondary" data-action="modify-poi">Invia</button>
-            <button type="button" onclick="closePOIDialogue()">
+            <button type="button" class="btn btn-secondary" onclick="closePOIDialogue()">
                 Close
             </button>
         </form>
