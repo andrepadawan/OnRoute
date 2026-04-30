@@ -1,35 +1,37 @@
- var poi_map = null;
- var popup = L.popup()
- var poi_list = []
- var markers = new Map()
+var poi_map = null;
+var preview_map = null;
+var popup = L.popup()
+var poi_list = []
+var markers = new Map()
 
+poi_list = JSON.parse(document.getElementById('poi-data').textContent);
 
-        function openPOIDialogue(mode, data){
-            const dialogue = document.getElementById('dialogue-poi')
-            if(mode == 'add'){
-                setAddMode()
-            } else {
-                //getting the fields
-                setModifyMode(data)
-            }
-            dialogue.showModal()
-            setTimeout(function () {
-                 if (poi_map==null) {
-                         init_map()
-                         //Adding markers where our POI are, binding each one with its own name
-                         read_poi()
-                         poi_map.invalidateSize();
-                     }
-                     else {
-                         //Dialogue already opened, map is alright. We only need to recalculate the size
-                         poi_map.invalidateSize();
-                     }
-                     if(mode === 'modify'){
-                         markers.get(data.id).openPopup()
-                    }
-            }, 200)
-
+function openPOIDialogue(mode, data){
+    const dialogue = document.getElementById('dialogue-poi')
+    if(mode == 'add'){
+        setAddMode()
+    } else {
+        //getting the fields
+        setModifyMode(data)
+    }
+    dialogue.showModal()
+    setTimeout(function () {
+        if (poi_map==null) {
+            poi_map = init_map('poi-map')
+            //Adding markers where our POI are, binding each one with its own name
+            add_listener(poi_list, poi_map)
+            read_poi(poi_list, poi_map)
+            poi_map.invalidateSize();
         }
+        else {
+            //Dialogue already opened, map is alright. We only need to recalculate the size
+            poi_map.invalidateSize();
+        }
+        if(mode === 'modify'){
+            markers.get(data.id).openPopup()
+        }
+        }, 200)
+}
 
         function closePOIDialogue(){
             const dialogue = document.getElementById('dialogue-poi')
@@ -62,32 +64,41 @@
             return form
         }
 
-         function init_map() {
-            poi_map = L.map('poi-map').setView([45.0703, 7.6869] , 15);
+         function init_map(container_id) {
+            const map = L.map(container_id).setView([45.0703, 7.6869] , 15);
             L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png',
                          {
                              maxZoom: 19,
                              attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
-                         }).addTo(poi_map)
+                         }).addTo(map)
+             return map
          }
 
-         function read_poi() {
-             poi_list = JSON.parse(document.getElementById('poi-data').textContent);
-             console.log(poi_list)
-             poi_list.forEach(p => {
-                 const m = L.marker([p.lat, p.lon]).bindPopup(p.name).addTo(poi_map);
+         function add_listener(poi_list, map){
+            poi_list.forEach(p => {
+                 const m = L.marker([p.lat, p.lon]).bindPopup(p.name).addTo(map);
                  m.on('click', () => setModifyMode(p));
                  markers.set(p.id, m)
              })
+             //Adding a listener
+             poi_map.on('click', onMapClick)
+         }
 
+         function read_poi(poi_list, map) {
              if (poi_list.length > 0) {
                  const coordPoi = poi_list.map(p => [p.lat, p.lon]);
-                 poi_map.fitBounds(coordPoi, {padding: [10, 10]})
-                 //Adding a listener
-                 poi_map.on('click', onMapClick)
+                 map.fitBounds(coordPoi, {padding: [25, 25]})
                  //Since Leafleat does not like having a hidden map in a dialogue
-                 poi_map.invalidateSize() //Forces map to recalculate tiles
+                 map.invalidateSize() //Forces map to recalculate tiles
              }
+         }
+
+         function read_poi_prev(poi_list, map){
+            poi_list.forEach(p => {
+                 const m = L.marker([p.lat, p.lon]).bindPopup(p.name).addTo(map);
+             })
+             read_poi(poi_list, map)
+
          }
 
          function onMapClick(e) {
@@ -122,3 +133,7 @@
              const dialogue = document.getElementById('dialogue-poi');
              openPOIDialogue('modify', btn.dataset)})
         });
+
+preview_map = init_map('preview-map')
+read_poi_prev(poi_list, preview_map)
+preview_map.invalidateSize()

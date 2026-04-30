@@ -88,24 +88,44 @@ header{
     padding: var(--space-5);
     font-size: var(--font-size-2);
     font-weight: 700;
+    margin-left: var(--space-3);
 }
 
 .card-footer{
     display: flex;
     flex-direction: row;
     justify-content: flex-start;
+    text-justify: distribute;
     padding: var(--space-4);
     color: var(--color-text-light);
     font-style: italic;
+    font-size: var(--font-size-1);
+    margin-left: var(--space-6);
 
 }
 
 .card-list-row {
     display: flex;
     flex-direction: row;
-    justify-content: space-around;
+    justify-content: space-between;
     align-items: center;
 
+}
+
+
+.card-list-info {
+    display: flex;
+    flex-direction: column;
+}
+
+.list-info-coordinates {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    gap: var(--space-4);
+    color: var(--color-text-muted);
+    font-weight: 300;
+    font-size: var(--font-size-1);
 }
 
 .button-strip{
@@ -136,4 +156,34 @@ header{
 }
 .btn-secondary:hover{
     background: oklch(from var(--color-text-light) calc(l + 0.05) c h);
+}
+
+/* Card body: flex row per ospitare list + mappa fianco a fianco */
+.card-body{
+    display: flex;
+    flex-direction: row;
+    gap: var(--space-5);
+    padding: var(--space-3) var(--space-5);
+}
+
+.card-body > .card-list{
+    flex: 1 1 0;
+    list-style: none;
+    margin-left: var(--space-3);
+    padding: 0;
+}
+
+#preview-map{
+    flex: 0 0 35%;
+    min-height: 240px;
+    border-radius: var(--border-radius-xl);
+    border: var(--border-width-1) solid var(--color-border-soft);
+    overflow: hidden;
+}
+
+#poi-map{
+    width: 35vw;
+    height: 40vh;
+    margin-top: var(--space-4);
+    border-radius: var(--border-radius-lg);
 }

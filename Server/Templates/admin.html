@@ -38,10 +38,10 @@
     </header>
     <main>
         <div class="card-container">
-            <div class="card">
+            <div class="card shift">
             <div class="card-header">
                 <span>Turni</span>
-                <button class="btn btn-primary" data-action="add-shift" onclick="document.getElementById('add-dialog-shift').showModal()">Add shift</button>
+                <button class="btn btn-primary" data-action="add-shift" onclick="document.getElementById('add-dialog-shift').showModal()">+ Aggiungi</button>
             </div>
             <div class="card-body">
                 <ul class="card-list">
@@ -56,11 +56,11 @@
                                                             data-start-time="{{t.start.strftime('%H:%M')}}"
                                                             data-end-date="{{t.end.strftime('%Y-%m-%d')}}"
                                                             data-end-time="{{t.end.strftime('%H:%M')}}"
-                                                            >Edit</button>
+                                                            >Modifica</button>
                                     <div>
                                         <form method="post" action="/admin/delete-shift">
                                         <input type="hidden" name="id" value="{{t.id}}">
-                                        <button class="delete btn btn-secondary" type="submit"> Delete </button>
+                                        <button class="delete btn btn-secondary" type="submit"> Elimina </button>
                                         </form>
                                     </div>
                             </div>
@@ -70,42 +70,49 @@
             </div>
             <div class="card-footer">
                             <p>
-                                Il servizio sarà attivo negli orari specificati. <br>
-                                Premere (...) per modificare, eliminare o aggiungere un turno
+                                La posizione sarà condivisa solamente negli orari specificati. <br>
+
                             </p>
                         </div>
         </div>
-            <div class="card">
-            <div class="card-header">
-                        <span>Punti di interesse</span>
-                        <button class="btn btn-primary" data-action="add-poi" onclick="document.getElementById('dialogue-poi'); openPOIDialogue('add')">Add POI</button>
-            </div>
-            <div class="card-body">
-                <ul class="card-list">
-                        {% for t in poi %}
-                            <li class="card-list-row">
-                                <span>{{t.name}}</span>
-                                <span>{{t.lat}}</span>
-                                <span>{{t.lon}}</span>
-                                <div class="button-strip"> <button class="btn btn-secondary" data-action="modify-poi" type="button"
-                                            data-name="{{t.name}}"
-                                            data-lat="{{t.lat}}"
-                                            data-lon="{{t.lon}}"
-                                            data-id="{{t.id}}"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M9.5 2l2.5 2.5-7 7H2.5V9l7-7z" stroke="#2c333d" stroke-width="1.2" stroke-linejoin="round"></path></svg></button>
-                                    <div><form method="post" action="/admin/delete-poi">
-                                        <input type="hidden" name="id" value="{{t.id}}">
-                                        <button class="btn btn-secondary" type="submit"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M3 4h8M5.5 4V2.5h3V4M4 4l.5 7.5h5L10 4" stroke="#993333" stroke-width="1.2" stroke-linejoin="round"></path></svg></button>
-                                    </form>
+            <div class="card poi">
+                <div class="card-header">
+                            <span>Punti di interesse</span>
+                            <button class="btn btn-primary" data-action="add-poi" onclick="document.getElementById('dialogue-poi'); openPOIDialogue('add')">+ Aggiungi</button>
+                </div>
+                <div class="card-body">
+                    <ul class="card-list">
+                            {% for t in poi %}
+                                <li class="card-list-row">
+                                    <div class="card-list-info">
+                                        <div class="list-info-name">
+                                            <span>{{t.name}}</span>
+                                        </div>
+                                        <div class="list-info-coordinates">
+                                            <span class="">{{t.lat}}</span>
+                                            <span>{{t.lon}}</span>
+                                        </div>
                                     </div>
-                                </div>
-                            </li>
-                         {% endfor %}
-                        </ul>
-            </div>
-            <div class="card-footer">
+                                    <div class="button-strip"> <button class="btn btn-secondary" data-action="modify-poi" type="button"
+                                                data-name="{{t.name}}"
+                                                data-lat="{{t.lat}}"
+                                                data-lon="{{t.lon}}"
+                                                data-id="{{t.id}}"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M9.5 2l2.5 2.5-7 7H2.5V9l7-7z" stroke="#2c333d" stroke-width="1.2" stroke-linejoin="round"></path></svg></button>
+                                        <div><form method="post" action="/admin/delete-poi">
+                                            <input type="hidden" name="id" value="{{t.id}}">
+                                            <button class="btn btn-secondary" type="submit"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M3 4h8M5.5 4V2.5h3V4M4 4l.5 7.5h5L10 4" stroke="#993333" stroke-width="1.2" stroke-linejoin="round"></path></svg></button>
+                                        </form>
+                                        </div>
+                                    </div>
+                                </li>
+                             {% endfor %}
+                    </ul>
+                    <div id="preview-map">
+                    </div>
+                </div>
+                <div class="card-footer">
                 <p>
-                    I punti di interesse (partenza, arrivo, fermate) visibili sulla mappa. <br>
-                    Premere (...) per modificare, eliminare o aggiungere un turno
+                    I punti di interesse (partenza, arrivo, fermate) visibili sulla mappa mostrata al pubblico.
                 </p>
             </div>
         </div>
