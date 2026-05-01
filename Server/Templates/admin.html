@@ -47,9 +47,25 @@
                 <ul class="card-list">
                     {% for t in shifts %}
                         <li class="card-list-row">
-                            <span>Da {{t.start.strftime('%d-%m-%Y alle %H:%M')}}
-                                al {{t.end.strftime('%d-%m-%Y alle %H:%M')}}</span>
-                                <div class="button-strip">
+                            <div class="card-list-info shift">
+                                <div class="shift-col">
+                                        <label class="day">{{t.start.strftime('%A')}}</label>
+                                        <label class="card-list-date">{{t.start.strftime('%d/%m - %H:%M')}}</label>
+                                </div>
+                                <label class="shift-arrow">-></label>
+                                <div class="shift-col">
+                                        <label class="day">{% if t.start.strftime('%Y-%m-%d') != t.end.strftime('%Y-%m-%d') %}
+                                            {{t.end.strftime('%A')}}
+                                            {% endif %}</label>
+                                        <label class="card-list-date">
+                                            {% if t.start.strftime('%Y-%m-%d') != t.end.strftime('%Y-%m-%d') %}
+                                            {{t.end.strftime('%d/%m - %H:%M')}}
+                                            {% else %}
+                                            {{t.end.strftime('%H:%M')}}
+                                            {% endif %}</label>
+                                </div>
+                            </div>
+                            <div class="button-strip">
                                     <button type="button" class="btn btn-secondary" data-action="modify-shift"
                                                             data-id="{{t.id}}"
                                                             data-start-date="{{t.start.strftime('%Y-%m-%d')}}"
