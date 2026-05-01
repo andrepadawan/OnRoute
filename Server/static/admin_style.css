@@ -116,16 +116,17 @@ header{
 .card-list-info {
     display: flex;
     flex-direction: column;
+    flex: 1;
 }
 
 .list-info-coordinates {
-    display: flex;
-    flex-direction: row;
-    justify-content: flex-start;
+    display: grid;
+    grid-template-columns: 1fr 3fr;
     gap: var(--space-4);
     color: var(--color-text-muted);
     font-weight: 300;
     font-size: var(--font-size-1);
+    flex: 1;
 }
 
 .button-strip{
