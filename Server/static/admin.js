@@ -136,4 +136,5 @@ function openPOIDialogue(mode, data){
 
 preview_map = init_map('preview-map')
 read_poi_prev(poi_list, preview_map)
+preview_map.removeControl(preview_map.zoomControl);
 preview_map.invalidateSize()
