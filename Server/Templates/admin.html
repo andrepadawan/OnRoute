@@ -33,15 +33,15 @@
         </div>
         <div class="pill pill--success">
             <span class="pill-dot" aria-hidden="true"></span>
-            <span>Servizio attivo</span>
+            <span>{{_('Servizio attivo')}}</span>
         </div>
     </header>
     <main>
         <div class="card-container">
             <div class="card shift">
             <div class="card-header">
-                <span>Turni</span>
-                <button class="btn btn-primary" data-action="add-shift" onclick="document.getElementById('add-dialog-shift').showModal()">+ Aggiungi</button>
+                <span>{{_('Turni')}}</span>
+                <button class="btn btn-primary" data-action="add-shift" onclick="document.getElementById('add-dialog-shift').showModal()">{{_('+ Aggiungi')}}</button>
             </div>
             <div class="card-body">
                 <ul class="card-list">
@@ -49,13 +49,13 @@
                         <li class="card-list-row">
                             <div class="card-list-info shift">
                                 <div class="shift-col">
-                                        <label class="day">{{t.start.strftime('%A')}}</label>
+                                        <label class="day">{{_(t.start.strftime('%A'))}}</label>
                                         <label class="card-list-date">{{t.start.strftime('%d/%m - %H:%M')}}</label>
                                 </div>
                                 <label class="shift-arrow">-></label>
                                 <div class="shift-col">
                                         <label class="day">{% if t.start.strftime('%Y-%m-%d') != t.end.strftime('%Y-%m-%d') %}
-                                            {{t.end.strftime('%A')}}
+                                            {{_(t.end.strftime('%A'))}}
                                             {% endif %}</label>
                                         <label class="card-list-date">
                                             {% if t.start.strftime('%Y-%m-%d') != t.end.strftime('%Y-%m-%d') %}
@@ -72,11 +72,11 @@
                                                             data-start-time="{{t.start.strftime('%H:%M')}}"
                                                             data-end-date="{{t.end.strftime('%Y-%m-%d')}}"
                                                             data-end-time="{{t.end.strftime('%H:%M')}}"
-                                                            >Modifica</button>
+                                                            >{{_('Modifica')}}</button>
                                     <div>
                                         <form method="post" action="/admin/delete-shift">
                                         <input type="hidden" name="id" value="{{t.id}}">
-                                        <button class="delete btn btn-secondary" type="submit"> Elimina </button>
+                                        <button class="delete btn btn-secondary" type="submit">{{_('Elimina')}}</button>
                                         </form>
                                     </div>
                             </div>
@@ -86,15 +86,14 @@
             </div>
             <div class="card-footer">
                             <p>
-                                La posizione sarà condivisa solamente negli orari specificati. <br>
-
+                                {{_('La posizione sarà condivisa solamente negli orari specificati.')}} <br>
                             </p>
                         </div>
         </div>
             <div class="card poi">
                 <div class="card-header">
-                            <span>Punti di interesse</span>
-                            <button class="btn btn-primary" data-action="add-poi" onclick="document.getElementById('dialogue-poi'); openPOIDialogue('add')">+ Aggiungi</button>
+                            <span>{{_('Punti di interesse')}}</span>
+                            <button class="btn btn-primary" data-action="add-poi" onclick="document.getElementById('dialogue-poi'); openPOIDialogue('add')">{{_('+ Aggiungi')}}</button>
                 </div>
                 <div class="card-body">
                     <ul class="card-list">
@@ -128,7 +127,7 @@
                 </div>
                 <div class="card-footer">
                 <p>
-                    I punti di interesse (partenza, arrivo, fermate) visibili sulla mappa mostrata al pubblico.
+                    {{_('I punti di interesse (partenza, arrivo, fermate) visibili sulla mappa mostrata al pubblico.')}}
                 </p>
             </div>
         </div>
@@ -137,38 +136,38 @@
     <script src="/static/admin.js"></script>
     <dialog id='modify-shift-dialogue'>
                         <form method="post" action="/admin/modify-shift">
-                            <label>Start date: <input type="date" name="start_date" required></label>
-                            <label>Start time: <input type="time" name="start_time" required></label>
-                            <label>End date: <input type="date" name="end_date" required></label>
-                            <label>End time: <input type="time" name="end_time" required></label>
+                            <label>{{_('Start date')}}: <input type="date" name="start_date" required></label>
+                            <label>{{_('Start time')}}: <input type="time" name="start_time" required></label>
+                            <label>{{_('End date')}}: <input type="date" name="end_date" required></label>
+                            <label>{{_('End time')}}: <input type="time" name="end_time" required></label>
                             <input type="hidden" name="id">
-                            <button type="submit" class="btn btn-secondary">Modify</button>
+                            <button type="submit" class="btn btn-secondary">{{_('Modify')}}</button>
                             <button type="button" class="btn btn-secondary" onclick="document.getElementById('modify-shift-dialogue').close()">
-                                            Close
+                                            {{_('Close')}}
                             </button>
                         </form>
                     </dialog>
     <dialog id="add-dialog-shift">
         <form method="post" action="/admin/add-shift">
-            <label>Start date: <input type="date" name="start_date" required></label>
-            <label>Start time: <input type="time" name="start_time" required></label>
-            <label>End date: <input type="date" name="end_date" required></label>
-            <label>End time: <input type="time" name="end_time" required></label>
-            <button type="submit" class="btn btn-secondary">Add</button>
+            <label>{{_('Start date')}}: <input type="date" name="start_date" required></label>
+            <label>{{_('Start time')}}: <input type="time" name="start_time" required></label>
+            <label>{{_('End date')}}: <input type="date" name="end_date" required></label>
+            <label>{{_('End time')}}: <input type="time" name="end_time" required></label>
+            <button type="submit" class="btn btn-secondary">{{_('Add')}}</button>
             <button type="button" class="btn btn-secondary" onclick="document.getElementById('add-dialog-shift').close()">
-                Close
+                {{_('Close')}}
             </button>
         </form>
     </dialog>
     <dialog id="dialogue-poi">
         <form method="post" action="">
-            <label>Name: <input type="text" name="name" required></label>
-            <label>Latitude: <input type="number" step="any" name="lat" required></label>
-            <label>Longitude: <input type="number" step="any" name="lon" required></label>
+            <label>{{_('Name')}}: <input type="text" name="name" required></label>
+            <label>{{_('Latitude')}}: <input type="number" step="any" name="lat" required></label>
+            <label>{{_('Longitude')}}: <input type="number" step="any" name="lon" required></label>
             <input type="hidden" name="id">
             <button type="submit" class="btn btn-secondary" data-action="modify-poi">Invia</button>
             <button type="button" class="btn btn-secondary" onclick="closePOIDialogue()">
-                Close
+                {{_('Close')}}
             </button>
         </form>
         <div id="poi-map">

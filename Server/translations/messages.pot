@@ -1,0 +1,93 @@
+# Translations template for PROJECT.
+# Copyright (C) 2026 ORGANIZATION
+# This file is distributed under the same license as the PROJECT project.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2026.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PROJECT VERSION\n"
+"Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
+"POT-Creation-Date: 2026-05-02 10:41+0200\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.18.0\n"
+
+#: Templates/admin.html:36
+msgid "Servizio attivo"
+msgstr ""
+
+#: Templates/admin.html:43
+msgid "Turni"
+msgstr ""
+
+#: Templates/admin.html:44 Templates/admin.html:96
+msgid "+ Aggiungi"
+msgstr ""
+
+#: Templates/admin.html:75
+msgid "Modifica"
+msgstr ""
+
+#: Templates/admin.html:79
+msgid "Elimina"
+msgstr ""
+
+#: Templates/admin.html:89
+msgid "La posizione sarà condivisa solamente negli orari specificati."
+msgstr ""
+
+#: Templates/admin.html:95
+msgid "Punti di interesse"
+msgstr ""
+
+#: Templates/admin.html:130
+msgid ""
+"I punti di interesse (partenza, arrivo, fermate) visibili sulla mappa "
+"mostrata al pubblico."
+msgstr ""
+
+#: Templates/admin.html:139
+msgid "Start date"
+msgstr ""
+
+#: Templates/admin.html:140
+msgid "Start time"
+msgstr ""
+
+#: Templates/admin.html:141
+msgid "End date"
+msgstr ""
+
+#: Templates/admin.html:142
+msgid "End time"
+msgstr ""
+
+#: Templates/admin.html:144
+msgid "Modify"
+msgstr ""
+
+#: Templates/admin.html:146 Templates/admin.html:158 Templates/admin.html:170
+msgid "Close"
+msgstr ""
+
+#: Templates/admin.html:156
+msgid "Add"
+msgstr ""
+
+#: Templates/admin.html:164
+msgid "Name"
+msgstr ""
+
+#: Templates/admin.html:165
+msgid "Latitude"
+msgstr ""
+
+#: Templates/admin.html:166
+msgid "Longitude"
+msgstr ""
+

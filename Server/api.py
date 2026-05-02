@@ -2,6 +2,7 @@ import os
 from datetime import datetime, timezone
 import threading
 import secrets
+import babel
 
 from fastapi import FastAPI, Request, Header, HTTPException, Form, Depends, APIRouter
 from fastapi.responses import JSONResponse, HTMLResponse, RedirectResponse
@@ -12,6 +13,8 @@ from pydantic import BaseModel
 from typing import Annotated, Optional
 from pathlib import Path
 from dotenv import load_dotenv
+from babel.support import Translations
+
 
 from schedule_manager import ScheduleManager
 from mapManager import MapManager, PointOfInterest
@@ -58,7 +61,9 @@ app.mount("/branding", StaticFiles(directory=Path(__file__).parent.parent / "bra
 
 
 #telling Jinja where the HTML at
-templates = Jinja2Templates(Path(__file__).parent / "Templates")
+templates = Jinja2Templates(Path(__file__).parent / "Templates", extensions=["jinja2.ext.i18n"])
+translations = Translations.load(Path(__file__).parent / 'translations', ['it'])
+templates.env.install_gettext_translations(translations)
 
 #------------------- Custom data types------------------------
 #Setting up custom classes for data validation
