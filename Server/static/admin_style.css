@@ -69,7 +69,7 @@ header{
 
 .pill-failure {
     background: var(--color-failure-bg);
-    color: va(--color-failure);
+    color: var(--color-failure);
 }
 
 .pill-failure .pill-dot{
