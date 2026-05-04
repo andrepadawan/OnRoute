@@ -91,7 +91,7 @@ class Networking:
                 payload = self.get_payload()
                 logger.info(f"Payload: {payload}")
                 session.post(self.url_site, json = payload, timeout=5)
-            
+                logger.info(f"Coordinates posted to: {self.url_site}")
             except requests.exceptions.ConnectionError:
                 
                 logger.info("Connection lost")
@@ -117,7 +117,7 @@ if __name__ == "__main__":
 
     try:
         while True:
-            time.sleep(2)
+            time.sleep(3)
 
     except KeyboardInterrupt:
         print("\nStop.")

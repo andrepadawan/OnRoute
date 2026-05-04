@@ -14,6 +14,7 @@ from pydantic import BaseModel, Field, TypeAdapter
         function check is not yet adapted to a thread loop
     #return shift in chronological order
 """
+
 TIMETABLE_FILE = Path(__file__).parent / "timetable.json"
 
 class Timeshifts(BaseModel):

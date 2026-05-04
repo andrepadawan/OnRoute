@@ -20,37 +20,37 @@ msgstr ""
 
 #: Templates/admin.html:36
 msgid "Servizio attivo"
-msgstr ""
+msgstr "Service active"
 
 #: Templates/admin.html:43
 msgid "Turni"
-msgstr ""
+msgstr "Shifts"
 
 #: Templates/admin.html:44 Templates/admin.html:96
 msgid "+ Aggiungi"
-msgstr ""
+msgstr "+ Add"
 
 #: Templates/admin.html:75
 msgid "Modifica"
-msgstr ""
+msgstr "Edit"
 
 #: Templates/admin.html:79
 msgid "Elimina"
-msgstr ""
+msgstr "Delete"
 
 #: Templates/admin.html:89
 msgid "La posizione sarà condivisa solamente negli orari specificati."
-msgstr ""
+msgstr "Position will be shown only during the selected time windows"
 
 #: Templates/admin.html:95
 msgid "Punti di interesse"
-msgstr ""
+msgstr "Points of interest"
 
 #: Templates/admin.html:130
 msgid ""
 "I punti di interesse (partenza, arrivo, fermate) visibili sulla mappa "
 "mostrata al pubblico."
-msgstr ""
+msgstr "Points of interest that will be shown to the public map"
 
 #: Templates/admin.html:139
 msgid "Start date"
@@ -70,7 +70,7 @@ msgstr ""
 
 #: Templates/admin.html:144
 msgid "Modify"
-msgstr ""
+msgstr "Edit"
 
 #: Templates/admin.html:146 Templates/admin.html:158 Templates/admin.html:170
 msgid "Close"

@@ -96,9 +96,10 @@ _Lock = threading.Lock()
 @app.get("/embed")
 async def embed(request: Request):
     poi_json = mapManager.returnPrimitiveTypeList()
+    coordinates = is_service_available()
     return templates.TemplateResponse(request=request,
                                       name='embed_map.html',
-                                      context={"poi_json":poi_json, "coords":lastCoordinates.model_dump(mode='json')})
+                                      context={"poi_json":poi_json, "coords":coordinates.model_dump(mode='json')})
 
 
 #---------------------Updating coordinates endpoints
@@ -107,15 +108,7 @@ async def embed(request: Request):
 async def get_coordinates():
     #posts coordinates
     #but only if we are in the authorized time window
-    if scheduleManager.check_timetable():
-        #sending the coordinates in JSON
-        with _Lock:
-            return lastCoordinates
-    else:
-        with _Lock:
-            # Not sending live location: outside of shift hours
-            lastCoordinates.is_active = False
-            return lastCoordinates
+    return is_service_available()
 
 
 @app.post("/update-coordinates")
@@ -133,7 +126,6 @@ async def update_coordinates(coords: PayloadReceived, authorization: str = Heade
         """
         if coords.speed > 0.3 and coords.track is not None:#m/s
             lastCoordinates.track = coords.track
-        lastCoordinates.is_active = True
         lastCoordinates.timestamp = coords.timestamp
 
 #------------------administration section -----------------
@@ -209,3 +201,15 @@ async def delete_poi(id: str = Form(...)):
 #And then we tell the app of a router obj
 app.include_router(router)
 #
+
+def is_service_available() -> Coordinates():
+    if scheduleManager.check_timetable():
+        #sending the coordinates in JSON
+        with _Lock:
+            lastCoordinates.is_active = True
+            return lastCoordinates
+    else:
+        with _Lock:
+            # Not sending live location: outside of shift hours
+            lastCoordinates.is_active = False
+            return lastCoordinates
