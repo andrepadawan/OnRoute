@@ -12,8 +12,10 @@
     --accent: #cf9977;
     --color-marker-map: #1D2D88;
     --color-success:#2d8a48;
-    --color-success-bg:#e8f3eb;
-    --color-border-soft:#E2E8F0;
+    --color-success-bg:#e9f3e8;
+    --color-failure: #c00d0d;
+    --color-failure-bg: #f7bbbb;
+    --color-border-soft:#e8e8e8;
 
 
     /*Radius*/

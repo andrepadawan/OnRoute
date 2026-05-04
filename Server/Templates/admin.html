@@ -23,6 +23,7 @@
     <script type="application/json" id="poi-data">
     {{ poi_json | tojson }}
     </script>
+    <script id="status_is_active">{{ is_active | tojson }}</script>
 </head>
 
 <body>
@@ -31,9 +32,9 @@
             <img class="brand-logo" src="/branding/onroute_logo_dark_svg.svg" alt="OnRoute">
             <span class="brand-tag">Admin</span>
         </div>
-        <div class="pill pill--success">
+        <div class="pill pill-success">
             <span class="pill-dot" aria-hidden="true"></span>
-            <span>{{_('Servizio attivo')}}</span>
+            <span id="text-pill">{{_('Servizio attivo')}}</span>
         </div>
     </header>
     <main>
@@ -173,5 +174,6 @@
         <div id="poi-map">
         </div>
     </dialog>
+<script>is_active_pill()</script>
 </body>
 </html>

@@ -134,6 +134,22 @@ function openPOIDialogue(mode, data){
              openPOIDialogue('modify', btn.dataset)})
         });
 
+
+    function is_active_pill(){
+    const status = document.getElementById('status_is_active');
+    const pill = document.querySelector('.pill')
+        const text_pill=document.getElementById('text-pill')
+        if(status.textContent==='true'){
+            pill.classList.remove('pill-failure')
+            pill.classList.add('pill-success')
+            text_pill.textContent='Servizio attivo'
+        } else {
+            pill.classList.remove('pill-success')
+            text_pill.textContent='Servizio non attivo'
+            pill.classList.add('pill-failure')
+        }
+    }
+
 preview_map = init_map('preview-map')
 read_poi_prev(poi_list, preview_map)
 preview_map.removeControl(preview_map.zoomControl);

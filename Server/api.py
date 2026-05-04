@@ -142,10 +142,10 @@ async def admin_page(request: Request):
     poi_json = mapManager.returnPrimitiveTypeList()
     #necessary because the js in adminhtml uses, with Jinja, {{ | tojson }}, that relies on python's base
     #model, not pydantic (PointOfInterests), giving errors
-
+    is_active: Bool = scheduleManager.check_timetable()
     return templates.TemplateResponse(request=request,
                                       name="admin.html",
-                                      context={"shifts":shifts, "poi":poi, "poi_json":poi_json})
+                                      context={"shifts":shifts, "poi":poi, "poi_json":poi_json, "is_active":is_active})
 
 
 @router.post("/admin/delete-shift")

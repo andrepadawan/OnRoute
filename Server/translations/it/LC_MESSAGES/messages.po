@@ -22,6 +22,9 @@ msgstr ""
 msgid "Servizio attivo"
 msgstr "Servizio attivo"
 
+msgid "Servizio non attivo"
+msgstr "Servizio non attivo"
+
 #: Templates/admin.html:43
 msgid "Turni"
 msgstr "Turni"

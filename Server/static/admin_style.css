@@ -58,13 +58,22 @@ header{
     flex-shrink: 0;
 }
 
-.pill--success{
+.pill-success{
     background: var(--color-success-bg);
     color: var(--color-success);
 }
 
-.pill--success .pill-dot{
+.pill-success .pill-dot{
     background: var(--color-success);
+}
+
+.pill-failure {
+    background: var(--color-failure-bg);
+    color: va(--color-failure);
+}
+
+.pill-failure .pill-dot{
+    background: var(--color-failure);
 }
 
 .card-container{
@@ -176,6 +185,7 @@ header{
     background: oklch(from var(--color-primary-onroute) calc(l + 0.05) c h);
 }
 .btn:active { transform: scale(0.97) }
+
 .btn-primary{
     background-color: var(--color-primary-onroute);
     color: whitesmoke;
