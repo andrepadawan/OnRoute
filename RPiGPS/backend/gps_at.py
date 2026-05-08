@@ -49,13 +49,17 @@ class AtGNGGA():
     HPA: int
     VPA: int
 
+
     @classmethod
     def csv_parts(cls, parts: list[str]) -> "AtGNGGA":
         names = [f.name for f in fields(cls)]
         types = get_type_hints(cls)
         if len(parts) != len(names):
             raise ValueError(f"Expected {len(names)} arguments, got {len(parts)}")
-        kwargs = {n: types[n](p) for n,p in zip (names, parts)}
+
+        def cast(t, v):
+            return t(v) if v else t()  # cioé int() = 0, str()="", sono safe-defaults
+        kwargs = {n: cast(types[n],(p)) for n,p in zip (names, parts)}
         return cls(**kwargs)
 
 
@@ -113,7 +117,7 @@ class AtReader():
     def gps_loop(self):
         while not self._stop_event.is_set():
             #inside di external while so we can manage reconnections
-            ser = serial.Serial("/dev/ttyS0", timeout=1) #potrei mettere 0 visto che sono in un thread separato, però
+            ser = serial.Serial("/dev/ttyS0", timeout=1, baudrate=115200) #potrei mettere 0 visto che sono in un thread separato, però
             ser.write(b'AT+CGNSPWR=1\r\n')
             if(ser.read_until(b'OK')):
                 try:

@@ -31,7 +31,7 @@ class Networking:
                 self.gps_module = GpsReader()
             else:
                 print(f"No module/unexpected specified in .env: {os.getenv('GPS_MODULE')}")
-
+            self.gps_module.start()
         else: #in development mode, we use mock coordinates
             self._mock_dict_track = []
             self.gps_module = None
@@ -96,6 +96,7 @@ class Networking:
             payload = self.get_payload()
             if payload is None:
                 self._stop_event.wait(5)
+                logger.info(f"Payload none")
                 continue #salta il post se on ha coordinate (no fix)
             logger.info(f"Payload: {payload}")
 
