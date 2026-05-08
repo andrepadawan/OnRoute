@@ -70,8 +70,8 @@ templates.env.install_gettext_translations(translations)
 #coordinates must have the same field of the JSON received from rpi
 
 class PayloadReceived(BaseModel):
-    lon: float = 0.0
-    lat: float = 0.0
+    longitude: float = 0.0
+    latitude: float = 0.0
     speed: float = 0.0
     fix_status: int = 0
     track: float = 0.0
@@ -117,8 +117,8 @@ async def update_coordinates(coords: PayloadReceived, authorization: str = Heade
     if not secrets.compare_digest(authorization, f"Bearer {os.getenv('DEVICE_TOKEN')}"):
         raise HTTPException(status_code=401, detail="Unauthorized")
     with _Lock:
-        lastCoordinates.lon = coords.lon
-        lastCoordinates.lat = coords.lat
+        lastCoordinates.lon = coords.longitude
+        lastCoordinates.lat = coords.latitude
         lastCoordinates.speed = coords.speed
         """ Consideration: at low speeds or at a stop the orientation
          produces errors. Only registering the track if the speed is higher than 0.5km/h
