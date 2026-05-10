@@ -117,20 +117,33 @@ class AtReader():
     def gps_loop(self):
         while not self._stop_event.is_set():
             #inside di external while so we can manage reconnections
-            ser = serial.Serial("/dev/ttyS0", timeout=1, baudrate=115200) #potrei mettere 0 visto che sono in un thread separato, però
-            ser.write(b'AT+CGNSPWR=1\r\n')
-            if(ser.read_until(b'OK')):
-                try:
-                    while ser.is_open and not self._stop_event.is_set():
-                        ser.write(b'AT+CGNSINF\r\n')
-                        line = ser.readline()
-                        self.report(line)
-                except serial.SerialException as e:
-                    logger.info(f"Errors reading serial port: {ser.name}, {e} ")
+            ser = serial.Serial("/dev/serial0", timeout=2, baudrate=115200) #potrei mettere 0 visto che sono in un thread separato, però
+            logger.info(f"Serial port created")
+            ser.write(b'AT\r\n')
 
-                finally:
-                    ser.write(b'AT+CGNSPWR=0\r\n')
-                    ser.close()
+            if (ser.read_until('OK\r\n')): #Prima risposta, perché il modulo potrebbe non esserci proprio
+                logger.info(f"AT module opened and responding successfully")
+                ser.write(b'AT+CGNSPWR=1\r\n')
+                logger.info(f"Powering on GPS\r\n")
+                if(ser.read_until(b'OK\r\n')):
+                    try:
+                        while ser.is_open and not self._stop_event.is_set():
+                            ser.write(b'AT+CGNSINF\r')
+                            logger.info(f"Sent coordinates request to AT module")
+                            line = ser.readline()
+                            print(repr(line))
+                            self.report(line)
+                            self._stop_event.wait(2) #asks every 2 seconds
+                    except serial.SerialException as e:
+                        logger.info(f"Errors reading serial port: {ser.name}, {e} ")
+
+                    finally:
+                        ser.write(b'AT+CGNSPWR==0')
+                        logger.info(f"GPS powered off")
+                        ser.close()  # Outside whilw loop, last thing done here
+                        logger.info(f"Serial port with gps closed")
+                else:
+                    self._stop_event.wait(3)
 
 
 

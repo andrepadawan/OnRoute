@@ -132,6 +132,8 @@ if __name__ == "__main__":
             time.sleep(3)
 
     except KeyboardInterrupt:
+        sender.stop()
+        sender.gps_module.stop()
         print("\nStop.")
 
     finally:
