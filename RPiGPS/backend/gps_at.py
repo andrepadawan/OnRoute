@@ -140,7 +140,7 @@ class AtReader():
 
                         finally:
                             ser.write(b'AT+CGNSPWR=0')
-                            logger.info(f"GPS powered o ff")
+                            logger.info(f"GPS powered off")
                             ser.close()  # Outside whilw loop, last thing done here
                             logger.info(f"Serial port with gps closed")
                     else:

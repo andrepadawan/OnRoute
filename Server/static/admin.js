@@ -2,7 +2,8 @@ var poi_map = null;
 var preview_map = null;
 var popup = L.popup()
 var poi_list = []
-var markers = new Map()
+var markers = new Map() //mappa perché identifico ogni marker con id. Così posso eliminarli richiamando id
+
 
 poi_list = JSON.parse(document.getElementById('poi-data').textContent);
 

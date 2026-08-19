@@ -7,19 +7,22 @@ var coords_dict = null
 var map_wrapper = document.querySelector(".map-wrapper")
 
 function map_init(){
+    //Istanziando la mappa con misure a priori
          map = L.map('map').setView([45.0703, 7.6869], 15);
+         //E rimuovo i pulsanti +- perché su mobile tolgono parecchio spazio
          if (L.Browser.mobile) {
-             //Removing + - buttons on mobile
             map.removeControl(map.zoomControl);
         }
 
+        // carico il tile layer corretto (in futuro, possibilità di scegliere quale)
         L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
         maxZoom: 19,
         attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
             }).addTo(map);
 
+         //Disattivo per comodità d'uso: rimane cmq possibile spostare mappa e pinch-to-zoom
         map.scrollWheelZoom.disable();
-        map.invalidateSize()
+        map.invalidateSize() //Ricarica mappa leaflet
         //Map operations finished
         coords_dict = JSON.parse(document.getElementById('coords').textContent);
         map_wrapper.classList.toggle('service-off', !check_timetable());
