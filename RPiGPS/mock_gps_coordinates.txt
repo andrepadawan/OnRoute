@@ -1,0 +1,12 @@
+{"longitude":7.6862, "latitude":45.0708, "speed":0.2, "fix_status":2, "track":90.0, "time_of_acquisition":"2026-05-07T12:00:00Z"}
+{"longitude":7.6905, "latitude":45.0688, "speed":7.0, "fix_status":2, "track":115.0, "time_of_acquisition":"2026-05-07T12:00:00Z"}
+{"longitude":7.6932, "latitude":45.0673, "speed":6.5, "fix_status":1, "track":125.0, "time_of_acquisition":"2026-05-07T12:00:00Z"}
+{"longitude":7.6953, "latitude":45.0660, "speed":3.0, "fix_status":2, "track":130.0, "time_of_acquisition":"2026-05-07T12:00:00Z"}
+{"longitude":7.6940, "latitude":45.0640, "speed":0.3, "fix_status":2, "track":210.0, "time_of_acquisition":"2026-05-07T12:00:00Z"}
+{"longitude":7.6905, "latitude":45.0648, "speed":5.5, "fix_status":2, "track":260.0, "time_of_acquisition":"2026-05-07T12:00:00Z"}
+{"longitude":7.6868, "latitude":45.0670, "speed":6.0, "fix_status":0, "track":320.0, "time_of_acquisition":"2026-05-07T12:00:00Z"}
+{"longitude":7.6855, "latitude":45.0682, "speed":4.5, "fix_status":2, "track":340.0, "time_of_acquisition":"2026-05-07T12:00:00Z"}
+{"longitude":7.6840, "latitude":45.0655, "speed":7.5, "fix_status":2, "track":210.0, "time_of_acquisition":"2026-05-07T12:00:00Z"}
+{"longitude":7.6790, "latitude":45.0625, "speed":0.1, "fix_status":2, "track":225.0, "time_of_acquisition":"2026-05-07T12:00:00Z"}
+{"longitude":7.6802, "latitude":45.0680, "speed":6.5, "fix_status":2, "track":15.0, "time_of_acquisition":"2026-05-07T12:00:00Z"}
+{"longitude":7.6835, "latitude":45.0700, "speed":5.5, "fix_status":2, "track":55.0, "time_of_acquisition":"2026-05-07T12:00:00Z"}

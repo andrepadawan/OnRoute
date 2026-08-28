@@ -1,0 +1,12 @@
+- implementare time of last acquisition / ultimo aggiornamento
+- Quando mappa attiva ma gps non ancora online: quale stato?
+    - Se non ha mai avuto ricezione: veicolo non ancora partito.
+    - Se ha già avuto ricezione: ok, ultimo aggiornamento ore ##:##
+    - Se non riceve aggiornamenti da 30 minuti, messaggio da entrambe le parti: admin ha pillola gialla
+            mentre client riceve: attenzione, la navetta ha problemi gps. Potrebbe passare cmq.
+            Failsafe offline: orari fissi. ("Ogni quaranta minuti a/r da x/y")
+- Fermate con ordine, haversine:
+    impostare ad esempio r1 = 500m ogni fermata, calcolare con haversine
+    impostare r2 = 200m.
+    Quando il mezzo arriva, scrivere il mezzo è a "luogo x" entrando in r2. Poi,
+        scrivere lasciato "luogo x" -> "verso y" quando lascio r1.

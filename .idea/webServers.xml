@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="WebServers">
+    <option name="servers">
+      <webServer id="39b9829a-b0cb-4f18-a98d-fb67b10c079d" name="rasp3b">
+        <fileTransfer rootFolder="/home/olmocomelalbero" accessType="SFTP" host="rasp3b" port="22" sshConfigId="d619369c-d3ff-4698-a807-105a9e434bd5" sshConfig="olmocomelalbero@rasp3b:22 key" keyPair="true">
+          <advancedOptions>
+            <advancedOptions dataProtectionLevel="Private" passiveMode="true" shareSSLContext="true" />
+          </advancedOptions>
+        </fileTransfer>
+      </webServer>
+    </option>
+  </component>
+</project>

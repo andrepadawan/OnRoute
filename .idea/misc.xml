@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="Black">
+    <option name="sdkName" value="Python 3.9 (GPSTracker)" />
+  </component>
+  <component name="ProjectRootManager" version="2" project-jdk-name="SSH (sftp://olmocomelalbero@rasp3b:22/home/olmocomelalbero/Documents/Development/OnRoute/OnRoute/.venv/bin/python)" project-jdk-type="Python SDK" />
+</project>
