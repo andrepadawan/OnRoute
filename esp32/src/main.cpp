@@ -1,14 +1,25 @@
-/**
- * Blink
- *
- * Turns on an LED on for one second,
- * then off for one second, repeatedly.
- */
+
+/* class Coordinates(BaseModel):
+    longitude: float
+    latitude: float
+    speed: float
+    fix_status: int
+    track: float
+    time_of_acquisition: str
+    model_config = ConfigDict(frozen = True)
+    
+    "
+*/
 
 #include "FS.h"
 #include "Arduino.h"
 #include "WiFiManager.h"
-#define LED 2
+#include "TinyGPS++.h"
+#define RXD2 16
+#define TXD2 17
+
+#define GPS_BAUD 9600
+
 
 
 #ifdef ESP32
@@ -16,14 +27,18 @@
 #endif
 
 #include "ArduinoJson.h"
-
 // JSON configuration file
 #define JSON_CONFIG_FILE "/test_config.json"
+
 bool shouldSaveConfig = false;
 //Se sono diversi nel config.json, verrà sovrascritto
 char api_token[34] = "";
 
 WiFiManager wm;
+TinyGPSPlus gps;
+
+HardwareSerial gpsSerial(2); //GPS instance
+
 
 void saveConfigCallback(){//Notifica in caso si debba salvare config.json
   Serial.print("Should save config");
@@ -33,11 +48,12 @@ void saveConfigCallback(){//Notifica in caso si debba salvare config.json
 
 void setup()
 {
-  pinMode(LED, OUTPUT);
   WiFi.mode(WIFI_STA);
   Serial.begin(115200);
   Serial.println("\n Starting");
   Serial.println("mounting FS...");
+  gpsSerial.begin(GPS_BAUD, SERIAL_8N1, RXD2, TXD2);
+  Serial.println("Serial 2 started at 9600 baud rate");
 
   if (SPIFFS.begin()) {
     Serial.println("mounted file system");
@@ -137,10 +153,29 @@ void setup()
 void loop()
 {
     // put your main code here, to run repeatedly:
-  digitalWrite(LED, HIGH);
-  Serial.println("LED is on");
-  delay(1000);
-  digitalWrite(LED, LOW);
-  Serial.println("LED is off");
-  delay(1000);
+  while (gpsSerial.available() > 0){
+    // get the byte data from the GPS
+    gps.encode(gpsSerial.read());
+    }
+
+  delay(2000);
+  if (gps.location.isUpdated()) {
+      Serial.print("LAT: ");
+      Serial.println(gps.location.lat(), 6);
+      Serial.print("LONG: "); 
+      Serial.println(gps.location.lng(), 6);
+      Serial.print("SPEED (km/h) = "); 
+      Serial.println(gps.speed.kmph()); 
+      Serial.print("ALT (min)= "); 
+      Serial.println(gps.altitude.meters());
+      Serial.print("HDOP = "); 
+      Serial.println(gps.hdop.value() / 100.0); 
+      Serial.print("Satellites = "); 
+      Serial.println(gps.satellites.value()); 
+      Serial.print("Time in UTC: ");
+      Serial.println(String(gps.date.year()) + "/" + String(gps.date.month()) + "/" + String(gps.date.day()) + "," + String(gps.time.hour()) + ":" + String(gps.time.minute()) + ":" + String(gps.time.second()));
+      Serial.println("");
+    }
+  Serial.println("-------------------------------");
+
 }
