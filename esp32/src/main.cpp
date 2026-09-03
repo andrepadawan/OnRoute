@@ -126,7 +126,7 @@ void setup()
   wm.addParameter(&custom_token);
 
   bool res;
-  res = wm.autoConnect("Tracker connect... ");
+  //res = wm.autoConnect("Tracker connect... ");
 
   if(!res) {
         Serial.println("Failed to connect");
