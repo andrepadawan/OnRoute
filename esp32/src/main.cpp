@@ -14,13 +14,15 @@
 #include "FS.h"
 #include "Arduino.h"
 #include "WiFiManager.h"
+#include "WiFiClient.h"
+#include "HTTPClient.h"
 #include "TinyGPS++.h"
+#include "string.h"
+#include "stdlib.h"
+
 #define RXD2 16
 #define TXD2 17
-
 #define GPS_BAUD 9600
-
-
 
 #ifdef ESP32
   #include "SPIFFS.h"
@@ -32,19 +34,40 @@
 
 bool shouldSaveConfig = false;
 //Se sono diversi nel config.json, verrà sovrascritto
-char api_token[34] = "";
+String api_token = getenv("DEVICE_TOKEN");
+String http_post = getenv("URL_WEBSITE");
 
 WiFiManager wm;
 TinyGPSPlus gps;
+HTTPClient http;
+WiFiClient wfc;
+JsonDocument doc;
 
 HardwareSerial gpsSerial(2); //GPS instance
 
+class Coordinates {
+  public:
+    double longitude;
+    double latitude;
+    double speed;
+    uint32_t fix_status;
+    double track;
+    char time_of_acquisition[256];
+  
+    void toJson(JsonObject obj) const {
+      obj["longitude"] = longitude;
+      obj["latitude"] = latitude;
+      obj["speed"] = speed;
+      obj["fix_status"] = fix_status;
+      obj["track"] = track;
+      obj["time_of_acquisition"] = time_of_acquisition;
+    }
+};
 
 void saveConfigCallback(){//Notifica in caso si debba salvare config.json
   Serial.print("Should save config");
   shouldSaveConfig = true;
 }
-
 
 void setup()
 {
@@ -84,7 +107,7 @@ void setup()
 
         Serial.println("\nparsed json");
 
-          strcpy(api_token, json["api_token"]);
+          json["api_token"] = api_token;
         } else {
           Serial.println("failed to load json config");
         }
@@ -97,7 +120,7 @@ void setup()
   //end read
 
   
-  WiFiManagerParameter custom_token("Codice Token", "Inserisci il token", api_token , 32);
+  WiFiManagerParameter custom_token("Codice Token", "Inserisci il token", api_token.c_str(), 32);
   wm.setSaveConfigCallback(saveConfigCallback);
 
   wm.addParameter(&custom_token);
@@ -119,7 +142,7 @@ void setup()
 
   //read updated parameters
 
-  strcpy(api_token, custom_token.getValue());
+  api_token = custom_token.getValue();
   Serial.println("The values in the file are: ");
   Serial.println("\tapi_token : " + String(api_token));
 
@@ -152,6 +175,7 @@ void setup()
 
 void loop()
 {
+  Coordinates coord;
     // put your main code here, to run repeatedly:
   while (gpsSerial.available() > 0){
     // get the byte data from the GPS
@@ -175,7 +199,28 @@ void loop()
       Serial.print("Time in UTC: ");
       Serial.println(String(gps.date.year()) + "/" + String(gps.date.month()) + "/" + String(gps.date.day()) + "," + String(gps.time.hour()) + ":" + String(gps.time.minute()) + ":" + String(gps.time.second()));
       Serial.println("");
-    }
-  Serial.println("-------------------------------");
 
+      coord.latitude = gps.location.lat();
+      coord.longitude = gps.location.lng();
+      coord.speed = gps.speed.kmph();
+      snprintf(coord.time_of_acquisition, sizeof(coord.time_of_acquisition), "%04d-%02d-%02d %02dh:%02dm:%02ds", gps.date.year(), gps.date.month(), gps.date.day(), gps.time.hour() , gps.time.minute(), gps.time.second());
+
+      Serial.println("-------------------------------");
+      http.begin(wfc, http_post);
+      http.addHeader("Authorization", "Bearer "+ String(api_token));
+      http.addHeader("Content-Type", "application/json");
+      // Data to send with HTTP POST: JSON
+      JsonObject obj = doc.to<JsonObject>();
+      coord.toJson(obj);
+      String payload;
+      serializeJson(obj, payload);
+      // Send HTTP POST request
+      int httpResponseCode = http.POST(payload);
+     
+      Serial.print("HTTP Response code: ");
+      Serial.println(httpResponseCode);
+        
+      // Free resources
+      http.end();
+  }
 }
