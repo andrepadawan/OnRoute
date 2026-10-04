@@ -69,8 +69,7 @@ void saveConfigCallback(){//Notifica in caso si debba salvare config.json
   shouldSaveConfig = true;
 }
 
-void setup()
-{
+void setup(){
   WiFi.mode(WIFI_STA);
   Serial.begin(115200);
   Serial.println("\n Starting");
@@ -98,12 +97,12 @@ void setup()
         auto deserializeError = deserializeJson(json, buf.get());
         serializeJson(json, Serial);
         if ( ! deserializeError ) {
-#else
-        DynamicJsonBuffer jsonBuffer;
-        JsonObject& json = jsonBuffer.parseObject(buf.get());
-        json.printTo(Serial);
-        if (json.success()) {
-#endif
+        #else
+          DynamicJsonBuffer jsonBuffer;
+            JsonObject& json = jsonBuffer.parseObject(buf.get());
+          json.printTo(Serial);
+          if (json.success()) {
+        #endif
 
         Serial.println("\nparsed json");
 
@@ -120,13 +119,13 @@ void setup()
   //end read
 
   
-  WiFiManagerParameter custom_token("Codice Token", "Inserisci il token", api_token.c_str(), 32);
+  WiFiManagerParameter custom_token("Codice_token", "Inserisci il token", api_token.c_str(), 32);
   wm.setSaveConfigCallback(saveConfigCallback);
 
   wm.addParameter(&custom_token);
 
   bool res;
-  //res = wm.autoConnect("Tracker connect... ");
+  res = wm.autoConnect("Tracker connect... ");
 
   if(!res) {
         Serial.println("Failed to connect");
