@@ -2,7 +2,7 @@
 #map {
     width: 90vw;
     height: 90dvh;
-    border-radius: var(--border-radius-map);
+    border-radius: var(--border-radius-xl);
 }
 
 body{
@@ -11,6 +11,18 @@ body{
     align-items: center;
     background-color: var(--color-bg);
     font-family: var(--font-family);
+}
+
+.title {
+    align-items: start;
+}
+.title-text{
+    font-size: var(--font-size-4);
+    font-weight: 500;
+}
+
+.footer-text{
+    padding: var(--space-4);
 }
 
 .container{
@@ -23,6 +35,8 @@ body{
 
 .map-wrapper{
     position: relative;
+    border-radius: var(--border-radius-xl);
+    
 }
 
 .overlay-info{
@@ -36,7 +50,7 @@ body{
     background: var(--color-overlay-bg);
     opacity: 0;
     pointer-events: none;
-    border-radius: var(--border-radius-map);
+    border-radius: var(--border-radius-xl);
     transition: opacity 0.3s ease;
 }
 
