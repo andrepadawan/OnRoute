@@ -8,6 +8,10 @@ import time
 from datetime import datetime, timezone
 from dotenv import load_dotenv
 from RPiGPS.backend.Coordinates import Coordinates
+from pathlib import Path
+
+# Percorso relativo a questo file
+MOCK_FILE = Path(__file__).parent / "mock_gps_coordinates.txt"
 
 
 load_dotenv()
@@ -35,7 +39,7 @@ class Networking:
         else: #in development mode, we use mock coordinates
             self._mock_dict_track = []
             self.gps_module = None
-            with open("mock_gps_coordinates.txt", "r") as f:
+            with open(MOCK_FILE, "r") as f:
                 for line in f:
                     self._mock_dict_track.append(json.loads(line))
                     #{**original_dict, "new_key": value}

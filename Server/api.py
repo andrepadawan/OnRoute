@@ -1,5 +1,5 @@
 import os
-from datetime import datetime, timezone
+from datetime import datetime, timezone, timedelta
 import threading
 import secrets
 import babel
@@ -9,11 +9,12 @@ from fastapi.responses import JSONResponse, HTMLResponse, RedirectResponse
 from fastapi.templating import Jinja2Templates
 from fastapi.staticfiles import StaticFiles
 from fastapi.security import HTTPBasic, HTTPBasicCredentials
-from pydantic import BaseModel
+from pydantic import BaseModel, AwareDatetime
 from typing import Annotated, Optional
 from pathlib import Path
 from dotenv import load_dotenv
 from babel.support import Translations
+from enum import Enum
 
 
 from schedule_manager import ScheduleManager
@@ -75,7 +76,7 @@ class PayloadReceived(BaseModel):
     speed: float = 0.0
     fix_status: int = 0
     track: float = 0.0
-    time_of_acquisition: datetime = None
+    time_of_acquisition: AwareDatetime
 
 class Coordinates(BaseModel):
     lon: float = 0.0
@@ -85,6 +86,18 @@ class Coordinates(BaseModel):
     is_active: bool = False
     timestamp: Optional[datetime] = None
 
+#creating status enum to safely protect coordinates from being exposed online
+#and to be more precise during diagnostic and debug
+
+class Status(str, Enum):
+    LIVE = "live"
+    STALE = "stale"
+    NO_DATA = "no_data"
+    OFF_SERVICE = "off_service"
+
+class PayloadSent(BaseModel):
+    status: Status
+    payload: Optional[Coordinates] = None
 
 scheduleManager = ScheduleManager()
 mapManager = MapManager()
@@ -96,24 +109,26 @@ _Lock = threading.Lock()
 @app.get("/embed")
 async def embed(request: Request):
     poi_json = mapManager.returnPrimitiveTypeList()
-    coordinates = is_service_available()
+    payload = get_payload_with_status_check()
     return templates.TemplateResponse(request=request,
                                       name='embed_map.html',
-                                      context={"poi_json":poi_json, "coords":coordinates.model_dump(mode='json')})
+                                      context={"poi_json":poi_json, "coords":payload.model_dump(mode='json')})
 
 
-#---------------------Updating coordinates endpoints
 #the endpoint to post coordinates to the main site
+#only returns JSON object with coordinates
+#(thinking about deprecating this branch)
 @app.get("/coordinates")
 async def get_coordinates():
     #posts coordinates
     #but only if we are in the authorized time window
     return is_service_available()
 
+#---------------------Updating coordinates endpoints
 
-@app.post("/update-coordinates")
+@app.post("/update-coordinates")# function used by gps receiver to post coordinates 
 async def update_coordinates(coords: PayloadReceived, authorization: str = Header(None)):
-    #receives from Raspberry
+    #receives from Raspberry or ESP32
     if not secrets.compare_digest(authorization, f"Bearer {os.getenv('DEVICE_TOKEN')}"):
         raise HTTPException(status_code=401, detail="Unauthorized")
     with _Lock:
@@ -202,14 +217,27 @@ async def delete_poi(id: str = Form(...)):
 app.include_router(router)
 #
 
-def is_service_available() -> Coordinates():
-    if scheduleManager.check_timetable():
-        #sending the coordinates in JSON
-        with _Lock:
-            lastCoordinates.is_active = True
-            return lastCoordinates
-    else:
-        with _Lock:
-            # Not sending live location: outside of shift hours
-            lastCoordinates.is_active = False
-            return lastCoordinates
+def is_service_available() -> bool:
+    return scheduleManager.check_timetable()
+
+def check_for_stale_data(serverTime: datetime, coordinatesTime: datetime) -> bool:
+    time_diff: timedelta = serverTime-coordinatesTime
+    FIX_EXPIRATION = timedelta(minutes=5)
+    return time_diff > FIX_EXPIRATION
+
+def get_payload_with_status_check() -> PayloadSent:
+   #Am I live? Should I be offline?
+   if(is_service_available()):
+       #I should be online, so:
+       #Am i with no data?
+       if(lastCoordinates.timestamp == None):
+           return PayloadSent(status=Status.NO_DATA, payload=None)
+           #Am i with an old gps fix?
+       if(not check_for_stale_data(datetime.now(timezone.utc), lastCoordinates.timestamp)):
+           #No: I should be live and I have fresh coordinates
+           return PayloadSent(status=Status.LIVE, payload=lastCoordinates)
+       else:
+            #I should be live, but my gps_fix is too old!
+            return PayloadSent(status = Status.STALE, payload=None)
+   else:
+       return PayloadSent(status=Status.OFF_SERVICE, payload=None)
