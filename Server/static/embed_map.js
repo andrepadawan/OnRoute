@@ -25,7 +25,7 @@ function map_init(){
         map.invalidateSize() //Ricarica mappa leaflet
         //Map operations finished
         coords_dict = JSON.parse(document.getElementById('coords').textContent);
-        map_wrapper.classList.toggle('service-off', !check_timetable());
+        
 
         read_poi()
         icons_init()
@@ -43,9 +43,7 @@ function map_init(){
                     el.classList.add('is-animated')
             }
         })
-         if(check_timetable()){
-            shuttle_marker_init()
-        }
+        render(coords_dict)
 }
 
 function icons_init(){
@@ -82,52 +80,57 @@ async function fetch_coordinates_loop() {
     if (!response.ok) {
       throw new Error(`Response status: ${response.status}`);
     }
-
-    coords_dict = await response.json();
-    update_position(coords_dict)
+    payload = await response.json();
+    render(payload)
   } catch (error) {
     console.error(error.message);
   }
 }
 
-
 window.addEventListener('load', function () {
   //document is loaded.
-  var fetchInterval = 10000; // 10 seconds.
+  var fetchInterval = 8000; // 8 seconds.
 
-  // Invoke the request every 10 seconds.
+  // Invoke the request every 8 seconds.
   setInterval(fetch_coordinates_loop, fetchInterval);
 });
 
-function shuttle_marker_init(){
-    shuttle = L.marker([coords_dict['lat'], coords_dict['lon']], {icon:shuttleIcon}).addTo(map)
+function shuttle_marker_init(position){
+    shuttle = L.marker([position.lat, position.lon], {icon:shuttleIcon}).addTo(map)
     //Adding listener to disable css transformation while zooming map
     shuttle.getElement().classList.add('is-animated')
 
 }
 
-function update_position(coords_dict){
-    if(check_timetable()){
-        map_wrapper.classList.toggle('service-off', !check_timetable());
-        if(shuttle && map.hasLayer(shuttle)){//all ok
-            shuttle.setLatLng([coords_dict['lat'], coords_dict['lon']])
-        } else {
-            shuttle_marker_init()//off to on case
-            shuttle.setLatLng([coords_dict['lat'], coords_dict['lon']])
-        }
-    } else {
-        map_wrapper.classList.toggle('service-off', !check_timetable());
-        if(shuttle&&map.hasLayer(shuttle)){//on to off
-            map.removeLayer(shuttle)
-        }
+function hide_shuttle_marker(){
+    if(shuttle){
+        map.removeLayer(shuttle)
+        shuttle = null
     }
 }
 
-function check_timetable(){
-    if(coords_dict['is_active'] === false){
-        return false
-    } else {
-        return true
-    }
-}
+function render(state){
+    switch(state?.status){
+        case "live":
+            //code for live coordinates
+            if(shuttle){
+                shuttle.setLatLng([state.payload.lat, state.payload.lon])
+            }
+            else {
+                shuttle_marker_init(state.payload)
+            }
+            break;
+        case "off_service":
 
+        case "no_data":
+
+        case "stale":
+            hide_shuttle_marker()
+            break;
+        default:
+            //hide everything, technical error
+            hide_shuttle_marker()
+            
+    }
+    map_wrapper.classList.toggle('service-off', state?.status!=="live");
+}

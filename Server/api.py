@@ -118,11 +118,11 @@ async def embed(request: Request):
 #the endpoint to post coordinates to the main site
 #only returns JSON object with coordinates
 #(thinking about deprecating this branch)
-@app.get("/coordinates")
+@app.get("/coordinates", response_model=PayloadSent)
 async def get_coordinates():
     #posts coordinates
     #but only if we are in the authorized time window
-    return is_service_available()
+    return get_payload_with_status_check()
 
 #---------------------Updating coordinates endpoints
 
