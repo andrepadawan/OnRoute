@@ -110,15 +110,23 @@ function hide_shuttle_marker(){
 }
 
 function render(state){
+    let shown = state?.status
     switch(state?.status){
         case "live":
             //code for live coordinates
-            if(shuttle){
-                shuttle.setLatLng([state.payload.lat, state.payload.lon])
-            }
+            //può esserci caso in cui risulta live ma non ha payload
+            if(!(state.payload==null))
+                if(shuttle){
+                    shuttle.setLatLng([state.payload.lat, state.payload.lon])
+                }
+                else {
+                    shuttle_marker_init(state.payload)
+                } 
             else {
-                shuttle_marker_init(state.payload)
-            }
+                //Errore in cui ho live ma payload non corretto
+                shown = "off_service"
+                hide_shuttle_marker()
+                }
             break;
         case "off_service":
 
@@ -132,5 +140,5 @@ function render(state){
             hide_shuttle_marker()
             
     }
-    map_wrapper.classList.toggle('service-off', state?.status!=="live");
+    map_wrapper.classList.toggle('service-off', shown!=="live");
 }
