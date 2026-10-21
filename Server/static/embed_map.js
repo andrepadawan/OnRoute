@@ -110,6 +110,7 @@ function hide_shuttle_marker(){
 }
 
 function render(state){
+    console.debug(state)
     let shown = state?.status
     switch(state?.status){
         case "live":
