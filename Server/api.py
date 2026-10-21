@@ -222,7 +222,7 @@ def is_service_available() -> bool:
 
 def check_for_stale_data(serverTime: datetime, coordinatesTime: datetime) -> bool:
     time_diff: timedelta = serverTime-coordinatesTime
-    FIX_EXPIRATION = timedelta(minutes=5)
+    FIX_EXPIRATION = timedelta(minutes=3)
     return time_diff > FIX_EXPIRATION
 
 def get_payload_with_status_check() -> PayloadSent:

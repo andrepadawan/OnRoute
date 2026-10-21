@@ -14,7 +14,7 @@ function map_init(){
             map.removeControl(map.zoomControl);
         }
 
-        // carico il tile layer corretto (in futuro, possibilità di scegliere quale)
+        // carico il tile layer corretto
         L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
         maxZoom: 19,
         attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
@@ -25,7 +25,7 @@ function map_init(){
         map.invalidateSize() //Ricarica mappa leaflet
         //Map operations finished
         coords_dict = JSON.parse(document.getElementById('coords').textContent);
-        
+
 
         read_poi()
         icons_init()
@@ -111,7 +111,8 @@ function hide_shuttle_marker(){
 
 function render(state){
     console.debug(state)
-    let shown = state?.status
+    //using data-* to change shown variable 
+    map_wrapper.dataset.status = state?.status
     switch(state?.status){
         case "live":
             //code for live coordinates
@@ -125,21 +126,24 @@ function render(state){
                 } 
             else {
                 //Errore in cui ho live ma payload non corretto
-                shown = "off_service"
+                map_wrapper.dataset.status = "error"
                 hide_shuttle_marker()
                 }
             break;
         case "off_service":
-
+            map_wrapper.dataset.status = "off-service"
+            break;
         case "no_data":
-
+            map_wrapper.dataset.status = "no-data"
+            break;
         case "stale":
+            map_wrapper.dataset.status = "stale"
             hide_shuttle_marker()
             break;
         default:
             //hide everything, technical error
             hide_shuttle_marker()
+            map_wrapper.dataset.status = "error"
             
     }
-    map_wrapper.classList.toggle('service-off', shown!=="live");
 }
