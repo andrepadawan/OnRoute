@@ -54,18 +54,35 @@ body{
     transition: opacity 0.3s ease;
 }
 
-.map-wrapper.service-off .overlay-info{
+/* Mostro l'overlay per tutti i messaggi che non sono live*/
+.map-wrapper:not([data-status="live"]) .overlay-info{
     opacity: 1;
     pointer-events: auto;
     z-index: 50000;
+
 }
+
+/* Nascondo tutti i blocchi con i dati */
+.overlay-info [data-msg] {
+    display: none;
+}
+
+/* Mostro un messaggio alla volta*/
+.map-wrapper[data-status="off-service"] [data-msg="off-service"] 
+{ display: block; }
+
+.map-wrapper[data-status="stale"] [data-msg="stale"] { display: block; }
+
+.map-wrapper[data-status="no-data"] [data-msg="no-data"] { display: block; }
+
+.map-wrapper[data-status="error"] [data-msg="error"] { display: block; }
 
 #showable-content{
     display: flex;
     flex-direction: column;
     align-items: center;
     max-height: 70lvh;
-    max-width: 70vw;
+    max-width: 
 }
 
 .leaflet-div-icon {
