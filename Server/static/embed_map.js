@@ -25,9 +25,8 @@ function map_init(){
         map.invalidateSize() //Ricarica mappa leaflet
         //Map operations finished
         coords_dict = JSON.parse(document.getElementById('coords').textContent);
+        read_poi()//a questo punto i poi sono pronti 
 
-
-        read_poi()
         icons_init()
 
         map.on('movestart zoomstart', function() {
