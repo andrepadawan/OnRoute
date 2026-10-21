@@ -1,7 +1,7 @@
 
 #map {
     width: 90vw;
-    height: 90dvh;
+    height: 80dvh;
     border-radius: var(--border-radius-xl);
 }
 
@@ -28,7 +28,7 @@ body{
 .container{
     display: flex;
     flex-direction: row;
-    text-align: left;
+    text-align: center;
     justify-content: flex-start;
     padding-top: env(safe-area-inset-top, 1em);
 }
@@ -82,7 +82,11 @@ body{
     flex-direction: column;
     align-items: center;
     max-height: 70lvh;
-    max-width: 
+    max-width: 70vw
+}
+
+.footer-text {
+    text-align:center;
 }
 
 .leaflet-div-icon {
