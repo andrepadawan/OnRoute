@@ -80,9 +80,8 @@ body{
 #showable-content{
     display: flex;
     flex-direction: column;
-    align-items: center;
-    max-height: 70lvh;
-    max-width: 70vw
+    align-items:ht: 70lvh;
+    max-width: 70
 }
 
 .footer-text {
