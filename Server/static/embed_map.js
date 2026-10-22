@@ -63,8 +63,17 @@ function read_poi() {
     })
 
              if (poi_list.length > 0) {
+
                  const coordPoi = poi_list.map(p => [p.lat, p.lon]);
                  map.fitBounds(coordPoi, {padding: [10, 10]})
+                 //se c'è shuttle tiene conto anche delle sue coordinate
+                //rivedere
+                 if(shuttle!=null&&state=="live"){
+                    var mapFit = poi_list.map(p => [p.lat, p.lon]);
+                    mapFit.push([shuttle.latitude, shuttle.longitude])
+                    map.fitBounds(mapFit, {padding: [10, 10]})
+
+                 }
                  //Adding a listener
                  //map.on('click', onMapClick)
                  //Since Leafleat does not like having a hidden map in a dialogue
