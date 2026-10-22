@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2026-05-02 10:41+0200\n"
+"POT-Creation-Date: 2026-10-22 23:20+0200\n"
 "PO-Revision-Date: 2026-05-02 10:41+0200\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: it\n"
@@ -18,103 +18,152 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 2.18.0\n"
 
-#: Templates/admin.html:36
+#: Templates/admin.html:37
 msgid "Servizio attivo"
 msgstr "Servizio attivo"
 
-msgid "Servizio non attivo"
-msgstr "Servizio non attivo"
-
-#: Templates/admin.html:43
+#: Templates/admin.html:44
 msgid "Turni"
 msgstr "Turni"
 
-#: Templates/admin.html:44 Templates/admin.html:96
+#: Templates/admin.html:45 Templates/admin.html:97
 msgid "+ Aggiungi"
 msgstr "+ Aggiungi"
 
-#: Templates/admin.html:75
+#: Templates/admin.html:76
 msgid "Modifica"
 msgstr "Modifica"
 
-#: Templates/admin.html:79
+#: Templates/admin.html:80
 msgid "Elimina"
 msgstr "Elimina"
 
-#: Templates/admin.html:89
+#: Templates/admin.html:90
 msgid "La posizione sarà condivisa solamente negli orari specificati."
 msgstr "La posizione sarà condivisa solamente negli orari specificati."
 
-#: Templates/admin.html:95
+#: Templates/admin.html:96
 msgid "Punti di interesse"
 msgstr "Punti di interesse"
 
-#: Templates/admin.html:130
+#: Templates/admin.html:131
 msgid ""
 "I punti di interesse (partenza, arrivo, fermate) visibili sulla mappa "
 "mostrata al pubblico."
 msgstr ""
 
-#: Templates/admin.html:139
+#: Templates/admin.html:140 Templates/admin.html:153
 msgid "Start date"
 msgstr "Data inizio"
 
-#: Templates/admin.html:140
+#: Templates/admin.html:141 Templates/admin.html:154
 msgid "Start time"
 msgstr "Ora inizio"
 
-#: Templates/admin.html:141
+#: Templates/admin.html:142 Templates/admin.html:155
 msgid "End date"
 msgstr "Data fine"
 
-#: Templates/admin.html:142
+#: Templates/admin.html:143 Templates/admin.html:156
 msgid "End time"
 msgstr "Ora fine"
 
-#: Templates/admin.html:144
+#: Templates/admin.html:145
 msgid "Modify"
 msgstr "Modifica"
 
-#: Templates/admin.html:146 Templates/admin.html:158 Templates/admin.html:170
+#: Templates/admin.html:147 Templates/admin.html:159 Templates/admin.html:171
 msgid "Close"
 msgstr "Chiudi"
 
-#: Templates/admin.html:156
+#: Templates/admin.html:157
 msgid "Add"
 msgstr "Aggiungi"
 
-#: Templates/admin.html:164
+#: Templates/admin.html:165
 msgid "Name"
 msgstr "Nome"
 
-#: Templates/admin.html:165
+#: Templates/admin.html:166
 msgid "Latitude"
 msgstr "Latitudine"
 
-#: Templates/admin.html:166
+#: Templates/admin.html:167
 msgid "Longitude"
 msgstr "Longitudine"
 
-msgid "Monday"
-msgstr "Lunedì"
+#: Templates/embed_map.html:40
+msgid ""
+"Il servizio è disponibile dalle 11:00 alle 20:00, durante i giorni di "
+"Flashback Art Fair."
+msgstr ""
 
-msgid "Tuesday"
-msgstr "Martedì"
+#: Templates/embed_map.html:41 Templates/embed_map.html:43
+msgid "Ops! Nessun aggiornamento in tempo reale dalla navetta."
+msgstr ""
 
-msgid "Wednesday"
-msgstr "Mercoledì"
+#: Templates/embed_map.html:42 Templates/embed_map.html:44
+msgid "Non temere, stiamo arrivando!"
+msgstr ""
 
-msgid "Thursday"
-msgstr "Giovedì"
+#: Templates/embed_map.html:45
+msgid "Errore generico."
+msgstr ""
 
-msgid "Friday"
-msgstr "Venerdì"
+#: Templates/embed_map.html:49
+msgid ""
+"Nei giorni di Flashback Art Fair le navette A/R sono disponibili dalle "
+"11:00 alle 20:00, ogni 40 minuti da Lingotto Fiere e ogni 20 minuti da "
+"Piazza Vittorio Veneto."
+msgstr ""
 
-msgid "Saturday"
-msgstr "Sabato"
+#: Templates/embed_map.html:50
+msgid "Segui la navetta in tempo reale e sali a bordo: il viaggio è gratuito"
+msgstr ""
 
-msgid "Sunday"
-msgstr "Domenica"
+#~ msgid "Servizio non attivo"
+#~ msgstr "Servizio non attivo"
 
-msgid "Add"
-msgstr "Aggiungi"
+#~ msgid "Monday"
+#~ msgstr "Lunedì"
+
+#~ msgid "Tuesday"
+#~ msgstr "Martedì"
+
+#~ msgid "Wednesday"
+#~ msgstr "Mercoledì"
+
+#~ msgid "Thursday"
+#~ msgstr "Giovedì"
+
+#~ msgid "Friday"
+#~ msgstr "Venerdì"
+
+#~ msgid "Saturday"
+#~ msgstr "Sabato"
+
+#~ msgid "Sunday"
+#~ msgstr "Domenica"
+
+#~ msgid ""
+#~ "Ops! Nessun aggiornamento in tempo reale dalla navetta.<br> \n"
+#~ "                    Non temere, stiamo arrivando!"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "Nei giorni di Flashback Art Fair "
+#~ "le navette A/R sono disponibili dalle"
+#~ " 11:00 alle 20:00, ogni 40 minuti "
+#~ "da Lingotto Fiere e ogni 20 minuti"
+#~ " da Piazza Vittorio Veneto.<br>\n"
+#~ "                Segui la navetta in "
+#~ "tempo reale e sali a bordo: il "
+#~ "viaggio è gratuito"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "Il servizio è disponibile dalle 11:00"
+#~ " alle 20:00, durante i giorni di "
+#~ "<b>Flashback Art Fair.</b>"
+#~ msgstr ""
+

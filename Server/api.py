@@ -14,7 +14,9 @@ from typing import Annotated, Optional
 from pathlib import Path
 from dotenv import load_dotenv
 from babel.support import Translations
+from babel.core import negotiate_locale
 from enum import Enum
+from contextvars import ContextVar
 
 
 from schedule_manager import ScheduleManager
@@ -36,6 +38,7 @@ app = FastAPI(
     redoc_url="/redoc" if os.getenv("ENV") == "development" else None,
     openapi_url="/openapi.json" if os.getenv("ENV") == "development" else None
 )
+
 
 #Creating HTTBasic instance: will be used for authentication
 security = HTTPBasic()
@@ -60,12 +63,60 @@ router = APIRouter(dependencies=[Depends(authentication)])
 app.mount("/static", StaticFiles(directory=Path(__file__).parent / "static"), name="static" )
 app.mount("/branding", StaticFiles(directory=Path(__file__).parent.parent / "branding"), name="branding" )
 
-
+#localizzazione
 #telling Jinja where the HTML at
 templates = Jinja2Templates(Path(__file__).parent / "Templates", extensions=["jinja2.ext.i18n"])
-translations = Translations.load(Path(__file__).parent / 'translations', ['it'])
-templates.env.install_gettext_translations(translations)
 
+#Scelgo lingua di fallback 
+DEFAULT = "it"
+SUPPORTED_LOCALES = ("it", "en")
+catalogs = {lang: Translations.load(Path(__file__).parent / "translations", [lang]) for lang in SUPPORTED_LOCALES}
+current_locale: ContextVar[str] = ContextVar("current_locale", default=DEFAULT)
+
+def locale_from_header(header: str | None) -> str | None:
+    if not header:
+        return None
+    candidates = []
+    for position, part in enumerate(header.split(",")):
+        tag, _, params = part.partition(";")
+        tag = tag.strip()
+        if not tag or tag == "*":
+            continue
+        weight = 1.0
+        params = params.strip()
+        if params.startswith("q="):
+            try:
+                weight = float(params[2:])
+            except ValueError:
+                continue
+        if weight <= 0:
+            continue
+        candidates.append((-weight, position, tag.replace("-", "_")))
+    candidates.sort()
+    return negotiate_locale([tag for _, _, tag in candidates], SUPPORTED_LOCALES)
+
+
+def tr(message: str) -> str:
+    return catalogs[current_locale.get()].gettext(message)
+
+def tr_plural(singular: str, plural: str, n: int) -> str:
+    return catalogs[current_locale.get()].ngettext(singular, plural, n)
+
+templates.env.install_gettext_callables(tr, tr_plural, newstyle=False)
+
+@app.middleware("http")#tutte le richieste http
+#vengono filtrate da middleware
+async def pick_locale(request: Request, call_next):
+    wanted = request.query_params.get("locale")#locale letta da user
+
+    if wanted not in catalogs:
+        wanted = locale_from_header(request.headers.get("accept-language")) or DEFAULT
+    token = current_locale.set(wanted)
+    try:
+        return await call_next(request)
+    finally:
+        current_locale.reset(token)
+        
 #------------------- Custom data types------------------------
 #Setting up custom classes for data validation
 #coordinates must have the same field of the JSON received from rpi
