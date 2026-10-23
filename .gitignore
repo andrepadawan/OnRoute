@@ -4,6 +4,7 @@
 .vscode/settings.json
 __pycache__
 requirements.in
+.DS_Store
 
 #VENV
 /bin

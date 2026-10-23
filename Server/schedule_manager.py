@@ -1,10 +1,12 @@
-from time import time
 import datetime
+from datetime import timezone
 import threading
 import uuid
 from typing import List
 from pathlib import Path
-from pydantic import BaseModel, Field, TypeAdapter
+from zoneinfo import ZoneInfo
+from pydantic import BaseModel, Field, TypeAdapter, AwareDatetime
+
 
 """
     TO-DO:
@@ -22,8 +24,8 @@ class Timeshifts(BaseModel):
     id: str = Field(default_factory = lambda : str(uuid.uuid4()))
 
     #actual information
-    start: datetime.datetime
-    end: datetime.datetime
+    start: AwareDatetime
+    end: AwareDatetime
 
 _adapter = TypeAdapter(List[Timeshifts])
 
@@ -31,12 +33,12 @@ _adapter = TypeAdapter(List[Timeshifts])
 class ScheduleManager:
     def __init__(self):
         self._Lock = threading.Lock()
-        self.now = datetime.datetime.now()
+        self.now = datetime.datetime.now(timezone.utc)
 
 
     def check_timetable(self) -> bool:
         #isolating time we are processing information
-        self.now = datetime.datetime.now()
+        self.now = datetime.datetime.now(timezone.utc)
         table = self._read_json_file()
 
         #not very smart ik, will be updated
@@ -113,8 +115,10 @@ class ScheduleManager:
     def getIsoFormat(self, start_date: str, start_time: str, end_date: str, end_time: str)\
             -> (datetime.datetime, datetime.datetime):
         start = datetime.datetime.fromisoformat(f"{start_date}T{start_time}")
+        adjustedStart = start.replace(tzinfo=ZoneInfo("Europe/Rome"))
         end = datetime.datetime.fromisoformat(f"{end_date}T{end_time}")
-        return start, end
+        adjustedEnd = end.replace(tzinfo=ZoneInfo("Europe/Rome"))
+        return adjustedStart, adjustedEnd
 
 # For debug purposes only, for this module
 if __name__ == "__main__":
