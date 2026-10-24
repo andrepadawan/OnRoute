@@ -48,7 +48,7 @@ Su Mac non c'è `gpsd`, con `ENV=development` il codice legge `mock_gps_coordina
 
 
 ## Project status
-Ancora in corso. Vista la necessità di implementarlo durante un evento che si terrà a fine Ottobre 2025 a Torino, ho consapevolmente scelto di mantenere del debito tecnico a favore di un'implementazione più veloce e possibilmente già funzionale. L'endpoint '/embed', nonostante il nome, è una vera e propria landing page con tag, informazioni e stili hardcoded. Non è una soluzione elegante per un'applicazione a larga scala: questo è esattamente il debito tecnico menzionato prima.
+Ancora in corso. Vista la necessità di implementarlo durante un evento che si terrà a fine Ottobre 2026 a Torino, ho consapevolmente scelto di mantenere del debito tecnico a favore di un'implementazione più veloce e possibilmente già funzionale. L'endpoint '/embed', nonostante il nome, è una vera e propria landing page con tag, informazioni e stili hardcoded. Non è una soluzione elegante per un'applicazione a larga scala: questo è esattamente il debito tecnico menzionato prima.
 
 Seguiranno: 
   - Una vera gestione multilinea. Attualmente, per avere più linee è necessario avere due servizi attivi in parallelo e quindi due link diversi (questo spiega anche perché le informazioni sulla landing page si riferiscono anche a una seconda linea che non è visualizzata nel link).

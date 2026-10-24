@@ -1,225 +1,219 @@
-# esp32_test — OnRoute hardware test firmware
+# esp32_test — firmware di collaudo hardware OnRoute
 
-**Test** firmware: it answers a single question — *does the hardware work end-to-end?*
-GPS NEO-6M → ESP32 → phone hotspot → `POST /update-coordinates` on Railway, with no Mac attached.
-Status is shown on an LED and on a 128x64 OLED display.
+Firmware **di test**: serve a rispondere a una sola domanda — *l'hardware funziona end-to-end?*
+GPS NEO-6M → ESP32 → hotspot del telefono → `POST /update-coordinates` su Railway, senza Mac collegato.
+Stato visibile su LED e su display OLED 128x64.
 
-This is not the final firmware: study it, then write your own version in `../esp32/`.
-
-> On-device strings (display, serial monitor, captive portal) are in Italian. They are quoted
-> verbatim below, with their meaning alongside.
+Non è il firmware definitivo: studialo, poi riscrivi la versione tua in `../esp32/`.
 
 ---
 
-## Structure
+## Struttura
 
 ```
 esp32_test/
-├── platformio.ini        board, libraries, hook to load_env.py
-├── load_env.py           .env  ->  #define ENV_<KEY> "value"  (at compile time)
-├── .env.example          .env template (the real .env is gitignored)
+├── platformio.ini        board, librerie, aggancio a load_env.py
+├── load_env.py           .env  ->  #define ENV_<CHIAVE> "valore"  (a compile time)
+├── .env.example          modello del .env (il .env vero è gitignorato)
 └── src/
-    ├── main.cpp          setup()/loop(): orchestration, no delay() in the loop
-    ├── config.h          pins, timings, .env defaults — everything you may want to tweak lives here
-    ├── Coordinates.h     struct = mirror of PayloadReceived (Server/api.py) + toJson()
-    ├── GpsReader.*       UART2 + TinyGPS++, non-blocking reads, diagnostics
-    ├── Settings.*        WiFi startup (known networks -> captive portal) + NVS overrides; token and line as a pair
-    ├── KnownNetworks.*   list of up to 6 WiFi networks in NVS: survives firmware flashing
-    ├── WifiKeeper.*      reconnection when WiFi drops: async scan of known networks, restart after 30 min
-    ├── Uploader.*        HTTPS POST with Bearer token, explains error codes
-    ├── StatusLed.*       LED codes for when you can't see the serial monitor
-    ├── LocalClock.*      clock in Italian local time: from GPS, or from NTP when online
-    ├── NetProbe.*        "is there internet?" — separate FreeRTOS task, never blocks the loop
-    ├── NetState.h        Online/Offline/Unknown enum shared by NetProbe and Screens
-    ├── Display.*         OLED: I2C bus discovery, init, frame transfer
-    └── Screens.*         WHAT gets drawn (boot, portal, status) + UiState
+    ├── main.cpp          setup()/loop(): orchestrazione, niente delay() nel loop
+    ├── config.h          pin, tempi, default dal .env — tutto ciò che si "gira" sta qui
+    ├── Coordinates.h     struct = specchio di PayloadReceived (Server/api.py) + toJson()
+    ├── GpsReader.*       UART2 + TinyGPS++, lettura non bloccante, diagnostica
+    ├── Settings.*        avvio WiFi (reti note -> captive portal) + override in NVS; token e linea in coppia
+    ├── KnownNetworks.*   elenco di max 6 reti WiFi in NVS: sopravvive al flash del firmware
+    ├── WifiKeeper.*      riaggancio quando la rete cade: scan asincrono delle reti note, poi riavvio dopo 30 min
+    ├── Uploader.*        POST HTTPS con Bearer token, spiegazione dei codici d'errore
+    ├── StatusLed.*       codici LED per quando la seriale non la vedi
+    ├── LocalClock.*      orologio in ora italiana: dal GPS, oppure da NTP se c'è internet
+    ├── NetProbe.*        "c'è internet?" — task FreeRTOS separato, non blocca il loop
+    ├── NetState.h        enum Online/Offline/Unknown condiviso fra NetProbe e Screens
+    ├── Display.*         OLED: ricerca sul bus I2C, init, invio del frame
+    └── Screens.*         COSA si disegna (boot, portale, stato) + UiState
 ```
 
-`Screens` only draws: it knows nothing about I2C, WiFi or GPS. `main.cpp` fills a `UiState`
-(a snapshot of the data), `Display` hands it to `Screens` and sends the frame. Changing the
-layout means touching a single file.
+`Screens` disegna e basta: non sa nulla di I2C, WiFi o GPS. `main.cpp` riempie una `UiState`
+(fotografia dei dati), `Display` la passa a `Screens` e spedisce il frame. Per cambiare il
+layout tocchi un file solo.
 
-## Wiring
+## Cablaggio
 
-| GPS GY-NEO6MV2 | ESP32 DevKit        | Notes                                        |
+| GPS GY-NEO6MV2 | ESP32 DevKit        | Note                                         |
 |----------------|---------------------|----------------------------------------------|
-| VCC            | 3V3                 | the module has its own regulator             |
-| GND            | GND                 | **common GND**, nothing works without it     |
-| TX             | GPIO16 (RX2)        | **crossed**: GPS TX into ESP32 RX            |
-| RX             | GPIO17 (TX2)        | optional (only needed to configure the GPS)  |
+| VCC            | 3V3                 | il modulo ha il suo regolatore               |
+| GND            | GND                 | **GND comune**, senza questo non va niente   |
+| TX             | GPIO16 (RX2)        | **incrociato**: TX del GPS nel RX dell'ESP32 |
+| RX             | GPIO17 (TX2)        | facoltativo (serve solo per configurare il GPS) |
 
-| OLED 128x64 I2C | ESP32 DevKit       | Notes                                        |
+| OLED 128x64 I2C | ESP32 DevKit       | Note                                         |
 |-----------------|--------------------|----------------------------------------------|
 | VCC             | 3V3                |                                              |
 | GND             | GND                |                                              |
-| SDA             | GPIO21 (D21)       | standard ESP32 I2C pin                       |
+| SDA             | GPIO21 (D21)       | pin I2C standard dell'ESP32                  |
 | SCL             | GPIO22 (D22)       |                                              |
 
-At boot the firmware looks for the display at `0x3C`/`0x3D` and prints `[OLED] Schermo trovato`
-("display found") on serial. If it can't find it, it scans the bus and **carries on without a
-display**: GPS and uploads still work.
-A column of garbage pixels or an image shifted by 2 pixels → it's an SH1106 (typical of 1.3"
-displays): in `platformio.ini` remove the `;` in front of `build_flags = -D OLED_SH1106`.
+All'avvio il firmware cerca lo schermo a `0x3C`/`0x3D` e scrive in seriale `[OLED] Schermo trovato`.
+Se non lo trova fa una scansione del bus e **continua senza schermo**: GPS e invio funzionano lo stesso.
+Schermo con una colonna di pixel spazzatura o immagine spostata di 2 pixel → è un SH1106 (tipico
+dei 1.3"): in `platformio.ini` togli il `;` davanti a `build_flags = -D OLED_SH1106`.
 
-Battery/boost power: add a 220–1000 µF bulk capacitor close to the ESP32 power pins. If serial
-shows `Brownout detector was triggered`, that's the cause.
+Alimentazione da batteria/boost: condensatore bulk 220–1000 µF vicino ai pin di alimentazione
+dell'ESP32. Se in seriale vedi `Brownout detector was triggered`, è quello.
 
-## First boot
+## Primo avvio
 
-1. `cp .env.example .env` and fill in `URL_WEBSITE` (**full** URL, `https://…/update-coordinates`),
-   `DEVICE_TOKEN` (identical to the one on Railway) and `LINE_NUMBER` (the line for that token).
-2. Flash — from inside `esp32_test/`:
+1. `cp .env.example .env` e riempi `URL_WEBSITE` (URL **completo**, `https://…/update-coordinates`),
+   `DEVICE_TOKEN` (identico a quello su Railway) e `LINE_NUMBER` (la linea di quel token).
+2. Flash — da dentro `esp32_test/`:
    ```bash
    pio run -t upload
    pio device monitor
    ```
-   In VS Code: *PlatformIO → Open Project → `esp32_test`* (the repo contains two PlatformIO
-   projects, open this one as a standalone project).
-   During the build you should see `[load_env] ENV_URL_WEBSITE = …` — if it doesn't show up,
-   the `.env` wasn't read.
-3. Phone hotspot **on 2.4 GHz** (iPhone: *Personal Hotspot → Maximize Compatibility*;
-   Android: 2.4 GHz band). The ESP32 can't see 5 GHz.
-4. The LED stays **solid on** and the display shows `CONFIGURAZIONE` ("setup"): connect your
-   phone to the `OnRoute-Setup` network, the portal opens (otherwise go to `192.168.4.1`), pick
-   the hotspot, enter its password, save. The URL / token / line number fields are only needed
-   to override the `.env` without reflashing: **if left empty, they stay unchanged**.
-   The chosen network is added to the known-networks list (see below): next time, if that
-   network is in range, the portal won't open.
-   **Token and line are a pair**: they are always saved together and, if the `.env` changes,
-   they are reset together. If you change the token from the portal, check that the prefilled
-   line is still the right one (serial prints a warning if you changed the token but not the line).
-5. Take everything **outdoors**. NEO-6M first fix: 1 to 10+ minutes; later fixes are much faster.
-   The LED on the GPS module blinks once per second only when it has a fix.
+   In VS Code: *PlatformIO → Open Project → `esp32_test`* (il repo contiene due progetti
+   PlatformIO, apri questo come progetto a sé).
+   Durante la build vedi `[load_env] ENV_URL_WEBSITE = …` — se non compare, il `.env` non è stato letto.
+3. Hotspot del telefono **a 2,4 GHz** (iPhone: *Hotspot personale → Massimizza compatibilità*;
+   Android: banda 2,4 GHz). L'ESP32 non vede il 5 GHz.
+4. Il LED resta **acceso fisso** e lo schermo dice `CONFIGURAZIONE`: collegati col telefono alla
+   rete `OnRoute-Setup`, si apre il portale (altrimenti vai su `192.168.4.1`), scegli l'hotspot,
+   inserisci la password, salva. I campi URL / token / numero linea servono solo se vuoi
+   sovrascrivere il `.env` senza riflashare: **lasciati vuoti restano invariati**.
+   La rete scelta finisce nell'elenco delle reti note (vedi sotto): la prossima volta il portale
+   non si apre, se quella rete è in vista.
+   **Token e linea sono una coppia**: si salvano sempre insieme e, se il `.env` cambia, si azzerano
+   insieme. Se cambi il token dal portale, controlla che la linea precompilata sia ancora quella
+   giusta (in seriale compare un avviso se hai cambiato il token ma non la linea).
+5. Porta tutto **all'aperto**. Primo fix del NEO-6M: da 1 a 10+ minuti; i successivi molto più rapidi.
+   Il LED sul modulo GPS lampeggia 1 volta al secondo solo quando ha il fix.
 
-## Known WiFi networks
+## Reti WiFi note
 
-The ESP32 remembers up to **6 networks** (`KNOWN_NETWORKS_MAX` in `config.h`), not just the last one.
-They live in NVS, a partition separate from the firmware: `pio run -t upload` **does not erase them**.
-Only *Erase Flash* (`pio run -t erase`) and the BOOT-button reset erase them.
+L'ESP32 ricorda fino a **6 reti** (`KNOWN_NETWORKS_MAX` in `config.h`), non solo l'ultima.
+Stanno in NVS, una partizione separata dal firmware: `pio run -t upload` **non le cancella**.
+Le cancellano solo *Erase Flash* (`pio run -t erase`) e il reset col tasto BOOT.
 
-- **At boot**: scan, then try the known network with the strongest signal, then the others.
-  Up to 2 scans (the hotspot might still be starting up). No known network in range →
-  captive portal for 3 minutes; when the portal times out, restart and start over.
-- **New network from the portal**: added to the list. List full → it replaces the one saved
-  longest ago. A known network with a new password gets updated.
-- **When WiFi drops**: for 15 s the driver retries on its own, then every 15 s an
-  **asynchronous** scan (the loop never blocks) and an attempt with the known networks in range;
-  every 4 attempts the radio is switched off and on before scanning. After **30 minutes**
-  without WiFi: restart → if no known network is in range, the portal reopens.
-- **First boot after upgrading** from an older firmware: the network saved by WiFiManager is
-  imported into the list, so a device in the field doesn't reopen the portal.
+- **All'avvio**: scan, poi tentativo con la rete nota dal segnale più forte, poi le altre.
+  Fino a 2 scan (l'hotspot potrebbe essere ancora in accensione). Nessuna rete nota in vista →
+  captive portal, per 3 minuti; scaduto il portale, riavvio e si ricomincia.
+- **Nuova rete dal portale**: si aggiunge all'elenco. Elenco pieno → sostituisce quella salvata
+  da più tempo. Una rete già nota con password nuova viene aggiornata.
+- **Quando la rete cade**: per 15 s ci prova il driver da solo, poi ogni 15 s uno scan
+  **asincrono** (il loop non si blocca) e un tentativo con le reti note in vista; ogni 4
+  tentativi la radio viene spenta e riaccesa prima dello scan. Dopo **30 minuti** senza WiFi:
+  riavvio → se nessuna rete nota è in vista si riapre il portale.
+- **Primo avvio dopo l'aggiornamento** da un firmware precedente: la rete salvata da WiFiManager
+  viene importata nell'elenco, così il device in campo non riapre il portale.
 
-At boot, serial lists the known networks from newest to oldest (the last one is the next to be
-replaced). Passwords are never printed.
+All'avvio la seriale elenca le reti note, dalla più recente alla più vecchia (l'ultima è la
+prossima a essere sostituita). Le password non vengono mai stampate.
 
 ## Display
 
 ```
 ┌────────────────────────────┐
-│ LINEA 2          14:03:21  │  header: line (from portal/.env) + Italian local time
-│ 04/10/2026        ora GPS  │  date + time source: GPS, rete (NTP) or "attesa ora" (waiting)
-│ Trasmesso  SI 3s fa        │  "Sent": SI (yes) if the last accepted POST is under 15 s old
-│ Internet   SI              │  SI / NO / verifico... (checking)
-│ GPS        3D 8 sat        │  fix type and satellites
+│ LINEA 2          14:03:21  │  intestazione: linea (dal portale/.env) + ora italiana
+│ 04/10/2026        ora GPS  │  data + chi ha dato l'ora: GPS, rete (NTP) o "attesa ora"
+│ Trasmesso  SI 3s fa        │  SI se l'ultimo POST accettato ha meno di 15 s
+│ Internet   SI              │  SI / NO / verifico...
+│ GPS        3D 8 sat        │  tipo di fix e satelliti
 └────────────────────────────┘
 ```
 
-Problem values are shown **inverted** (white box, black text), so they're visible from a metre
-away. When `Trasmesso` is `NO`, it shows the first broken link in the chain:
+I valori problematici sono **in negativo** (riquadro bianco, testo nero), così si vedono da un
+metro. Quando `Trasmesso` è `NO`, accanto c'è il primo anello rotto della catena:
 
-| Reason      | Meaning                                                          |
+| Motivo      | Significa                                                        |
 |-------------|------------------------------------------------------------------|
-| `GPS muto`  | no bytes from the GPS: wiring                                    |
-| `no fix`    | GPS alive but no position: clear sky and patience                |
-| `no WiFi`   | hotspot off, too far, or on 5 GHz                                |
-| `no rete`   | WiFi ok but no internet (hotspot without mobile data)            |
-| `HTTP 401`  | (or any other code) the server replied with an error: see table below |
-| `err rete`  | the POST failed at network level (DNS, TLS, timeout)             |
-| `URL?`      | empty or malformed URL                                           |
-| `attesa`    | all set, the next upload goes out within 5 s                     |
+| `GPS muto`  | nessun byte dal GPS: cablaggio                                   |
+| `no fix`    | GPS vivo ma senza posizione: cielo libero e pazienza             |
+| `no WiFi`   | hotspot spento, lontano o a 5 GHz                                |
+| `no rete`   | WiFi ok ma niente internet (hotspot senza dati mobili)           |
+| `HTTP 401`  | (o altro codice) il server ha risposto con errore: vedi tabella sotto |
+| `err rete`  | il POST è fallito a livello di rete (DNS, TLS, timeout)          |
+| `URL?`      | URL vuoto o malformato                                           |
+| `attesa`    | tutto pronto, il prossimo invio parte entro 5 s                  |
 
-**Internet ≠ WiFi.** A hotspot without mobile data gives full WiFi and zero internet. `NetProbe`
-checks by opening a TCP connection to the server host every 10 s (in a separate task, so an
-unresponsive DNS doesn't freeze the display and GPS). Any HTTP response from the server already
-counts as proof, and in that case the check uses no data. With no internet the firmware
-**doesn't attempt the POST**: it retries once the check succeeds again.
+**Internet ≠ WiFi.** Un hotspot senza dati mobili dà WiFi pieno e internet zero. `NetProbe` lo
+verifica aprendo una connessione TCP verso l'host del server ogni 10 s (in un task separato, così
+un DNS che non risponde non congela schermo e GPS). Una risposta HTTP qualsiasi dal server vale
+già come prova, e in quel caso la verifica non spreca dati. Con internet assente il firmware
+**non tenta il POST**: riprova quando la verifica torna positiva.
 
-**Time:** the GPS provides UTC time even before a fix (one satellite is enough); without GPS it
-comes from NTP over the internet. Conversion to Italian local time, including the 25 October
-DST change, is handled by libc using the rule `CET-1CEST,M3.5.0,M10.5.0/3` in `config.h`.
+**Ora:** il GPS dà l'ora UTC anche prima del fix (basta un satellite); senza GPS la prende da
+NTP via internet. La conversione in ora italiana, compreso il cambio d'ora del 25 ottobre,
+la fa la libc con la regola `CET-1CEST,M3.5.0,M10.5.0/3` in `config.h`.
 
-## LED codes (on-board blue LED, GPIO2)
+## Codici LED (LED blu on-board, GPIO2)
 
-| LED                      | Meaning                                  | What to do                                  |
+| LED                      | Significato                              | Cosa fare                                   |
 |--------------------------|------------------------------------------|---------------------------------------------|
-| solid on                 | portal open                              | connect to `OnRoute-Setup`                  |
-| fast blink (5 Hz)        | the GPS sends no bytes                   | wiring: TX→GPIO16, GND, power               |
-| slow blink (1 Hz)        | GPS alive but no fix / first upload      | outdoors, clear sky, wait                   |
-| 3 flashes every 2 s      | WiFi lost or no internet                 | hotspot on? 2.4 GHz? mobile data enabled?   |
-| 2 flashes every 2 s      | the server replies with an error         | serial monitor or Railway logs (see below)  |
-| 1 flash every 2 s        | **all good**, last POST accepted         | nothing: the hardware works                 |
+| acceso fisso             | portale aperto                           | collegati a `OnRoute-Setup`                  |
+| lampeggio veloce (5 Hz)  | il GPS non manda nessun byte             | cablaggio: TX→GPIO16, GND, alimentazione    |
+| lampeggio lento (1 Hz)   | GPS vivo ma senza fix / primo invio      | all'aperto, cielo libero, aspetta           |
+| 3 flash ogni 2 s         | WiFi perso o internet assente            | hotspot acceso? 2,4 GHz? dati mobili attivi? |
+| 2 flash ogni 2 s         | il server risponde con errore            | monitor seriale o log Railway (vedi sotto)  |
+| 1 flash ogni 2 s         | **tutto ok**, ultimo POST accettato      | niente: l'hardware funziona                 |
 
-**Check without a Mac:** on your phone open `https://<your-service>.up.railway.app/coordinates`
-and reload: `timestamp` should advance every ~5 s. (Works outside shift hours too: only `is_active` changes.)
+**Verifica senza Mac:** dal telefono apri `https://<tuo-servizio>.up.railway.app/coordinates`
+e ricarica: `timestamp` deve avanzare ogni ~5 s. (Funziona anche fuori turno: cambia solo `is_active`.)
 
-**Reset:** with the firmware running, hold **BOOT** for 5 s → erases **all** saved networks and
-overrides, restarts, reopens the portal. (Don't hold it while powering on: that's flash mode.)
+**Reset:** a firmware avviato tieni premuto **BOOT** per 5 s → cancella **tutte** le reti salvate e
+gli override, riavvia, riapre il portale. (Non tenerlo premuto mentre dai corrente: quella è la modalità flash.)
 
-## Reading the serial monitor
+## Leggere il monitor seriale
 
 ```
 [GPS] chars=48213 ok=402 fail=0 sats=8 hdop=1.1 fix=3 lat=45.070812 lng=7.686234 age=412ms
 [HTTP] POST {"longitude":7.686234,…} -> 200 (640 ms)
 ```
 
-| Symptom                     | Likely cause                                                     |
+| Sintomo                     | Causa probabile                                                  |
 |-----------------------------|------------------------------------------------------------------|
-| `chars=0`                   | TX/RX swapped, missing GND, GPS not powered                      |
-| `fail` increasing           | wrong baud rate or noise on the wire                             |
-| `chars` ok, `sats=0`        | the GPS talks but can't see the sky                              |
-| `-> 401`                    | token differs from the one on Railway                            |
-| `-> 404`                    | the URL doesn't end with `/update-coordinates`                   |
-| `-> 422`                    | JSON doesn't match `PayloadReceived` (read the `detail`)         |
-| `-> 301/308`                | URL with `http://` instead of `https://`                         |
-| `-> -1` / network error     | hotspot without mobile data, DNS, server down                    |
+| `chars=0`                   | TX/RX invertiti, GND mancante, GPS non alimentato                |
+| `fail` che cresce           | baud sbagliato o disturbi sul filo                               |
+| `chars` ok, `sats=0`        | il GPS parla ma non vede il cielo                                |
+| `-> 401`                    | token diverso da quello su Railway                               |
+| `-> 404`                    | l'URL non finisce con `/update-coordinates`                      |
+| `-> 422`                    | JSON non conforme a `PayloadReceived` (leggi il `detail`)        |
+| `-> 301/308`                | URL con `http://` invece di `https://`                           |
+| `-> -1` / errore di rete    | hotspot senza dati mobili, DNS, server spento                    |
 
-## Testing against the server on your Mac (no Railway)
+## Test contro il server sul Mac (senza Railway)
 
-Mac and ESP32 on the same hotspot, then from `Server/` run `uvicorn api:app --host 0.0.0.0 --port 8000`
-(`0.0.0.0`, not the default `127.0.0.1`, otherwise the ESP32 can't reach you) and in the portal
-set the URL to `http://<Mac-IP>:8000/update-coordinates`. The uploader picks HTTP or HTTPS on its
-own based on the URL.
+Mac e ESP32 sullo stesso hotspot, poi da `Server/` lancia `uvicorn api:app --host 0.0.0.0 --port 8000`
+(`0.0.0.0`, non il default `127.0.0.1`, altrimenti l'ESP32 non ti raggiunge) e nel portale
+metti URL `http://<IP-del-Mac>:8000/update-coordinates`. L'uploader sceglie da solo HTTP o HTTPS
+guardando l'URL.
 
-## Why the firmware in `../esp32/` didn't work
+## Perché il firmware in `../esp32/` non funzionava
 
-Worth keeping in mind when you rewrite it:
+Utile da tenere a mente quando lo riscrivi:
 
-1. **`getenv()` on ESP32 always returns empty** — there's no operating system. Here the `.env`
-   is read at compile time by `load_env.py`.
-2. **`WiFiClient` on an `https://` URL** — Railway is HTTPS-only; you need `WiFiClientSecure`.
-3. **`delay(2000)` in the loop** — the default UART buffer is 256 bytes, the NEO-6M sends ~500/s:
-   most NMEA sentences were lost. Here: non-blocking loop + 4 KB buffer.
-4. **Date format `2026-09-26 14h:03m:21s`** — Pydantic expects ISO 8601, the server replied 422.
-   Here: `2026-09-26T14:03:21Z` (verified against a copy of `PayloadReceived`).
-5. **`fix_status` and `track` never assigned** — random memory in the JSON. Here every field has a default.
-6. **`speed` in km/h** — the server works in m/s (0.3 threshold). Here `gps.speed.mps()`.
-7. **`json["api_token"] = api_token`** — reversed direction (it wrote instead of reading), and
-   `SPIFFS.begin()` without `true` fails on never-formatted flash. Here: NVS with `Preferences`.
+1. **`getenv()` su ESP32 ritorna sempre vuoto** — non c'è un sistema operativo. Qui il `.env`
+   viene letto a compile time da `load_env.py`.
+2. **`WiFiClient` su URL `https://`** — Railway è solo HTTPS; serve `WiFiClientSecure`.
+3. **`delay(2000)` nel loop** — il buffer UART di default è 256 byte, il NEO-6M ne manda ~500/s:
+   la maggior parte delle frasi NMEA andava persa. Qui: loop non bloccante + buffer 4 KB.
+4. **Formato data `2026-09-26 14h:03m:21s`** — Pydantic vuole ISO 8601, il server rispondeva 422.
+   Qui: `2026-09-26T14:03:21Z` (verificato contro una copia di `PayloadReceived`).
+5. **`fix_status` e `track` mai assegnati** — memoria casuale nel JSON. Qui ogni campo ha un default.
+6. **`speed` in km/h** — il server ragiona in m/s (soglia 0.3). Qui `gps.speed.mps()`.
+7. **`json["api_token"] = api_token`** — direzione invertita (scriveva invece di leggere), e
+   `SPIFFS.begin()` senza `true` fallisce su flash mai formattata. Qui: NVS con `Preferences`.
 
-## Known technical debt (fine for a test, not for the event)
+## Debito tecnico consapevole (va bene per un test, non per l'evento)
 
-- `setInsecure()`: TLS is encrypted but the server certificate isn't verified → in the final
-  version use `setCACert()` with the root CA.
-- Token and URL are inside the binary: anyone with physical access to the device can extract
-  them. The same goes for known-network passwords: NVS is stored in plain text (NVS encryption
-  exists, but it would be overkill here).
-- CPU at 160 MHz instead of 240 (`CPU_FREQ_MHZ` in `config.h`) to reduce power draw. 80 MHz would
-  draw even less but triples the TLS handshake time, which blocks the loop: only try it after
-  measuring the `[HTTP] POST ... (xxx ms)` times.
-- The POST is blocking (up to 8 s timeout): the 4 KB buffer absorbs it, but display and LED
-  freeze meanwhile. The worst case (dead DNS) is already avoided by `NetProbe`. For the final
-  version consider a dedicated FreeRTOS upload task with a 1-element queue — `NetProbe` is already
-  a working example of the "separate task + atomic variables" pattern.
-- The line is entered by hand: it may not match the token. With the silo model (one Railway
-  instance per line) the server already knows its line: an authenticated endpoint such as
-  `GET /device-info` returning it would remove the error at the root.
+- `setInsecure()`: TLS cifrato ma senza verifica del certificato del server → nel definitivo
+  `setCACert()` con la root CA.
+- Token e URL sono dentro il binario: chi ha fisicamente il device può estrarli. Lo stesso vale
+  per le password delle reti note: la NVS è in chiaro (esiste la NVS encryption, qui sarebbe eccessiva).
+- CPU a 160 MHz invece di 240 (`CPU_FREQ_MHZ` in `config.h`) per consumare meno. 80 MHz consumerebbe
+  ancora meno ma triplica l'handshake TLS, che blocca il loop: da provare solo dopo aver misurato
+  i tempi `[HTTP] POST ... (xxx ms)`.
+- Il POST è bloccante (fino a 8 s di timeout): il buffer da 4 KB lo assorbe, ma intanto display
+  e LED restano fermi. Il caso peggiore (DNS morto) è già evitato da `NetProbe`. Nel definitivo
+  valuta un task FreeRTOS dedicato all'upload con una coda da 1 elemento — `NetProbe` è già un
+  esempio funzionante dello schema "task separato + variabili atomiche".
+- La linea è inserita a mano: può non corrispondere al token. Con il modello a silo (un'istanza
+  Railway per linea) il server conosce già la sua linea: un endpoint autenticato tipo
+  `GET /device-info` che la restituisce eliminerebbe l'errore alla radice.

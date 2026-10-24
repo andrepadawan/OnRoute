@@ -3,6 +3,7 @@
 __pycache__
 requirements.in
 .DS_Store
+./esp32
 
 #VENV
 /bin
