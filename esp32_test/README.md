@@ -4,7 +4,7 @@ Firmware **di test**: serve a rispondere a una sola domanda — *l'hardware funz
 GPS NEO-6M → ESP32 → hotspot del telefono → `POST /update-coordinates` su Railway, senza Mac collegato.
 Stato visibile su LED e su display OLED 128x64.
 
-Non è il firmware definitivo: studialo, poi riscrivi la versione tua in `../esp32/`.
+Non è il firmware definitivo: studiare e riscrivere in `../esp32/`.
 
 ---
 
