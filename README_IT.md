@@ -53,11 +53,11 @@ Ancora in corso. Vista la necessità di implementarlo durante un evento che si t
 Seguiranno: 
   - Una vera gestione multilinea. Attualmente, per avere più linee è necessario avere due servizi attivi in parallelo e quindi due link diversi (questo spiega anche perché le informazioni sulla landing page si riferiscono anche a una seconda linea che non è visualizzata nel link).
   - Revisione del firmware di ESP32: per rispettare le scadenze e avere un dispositivo user friendly pronto per il deploy a poche settimane dall'evento è stato utilizzato Claude Code in maniera generativa solamente per la cartella '/esp32_test'.
-  - Schema KiKad della pcb. Attualmente il prototipo gira su una PCB millefori, con saldatura a stagno e cavi solid wire. Per ottenere un segnale migliore dal modulo gps, è stato aggiunto un condensatore di circa 220uF tra GND e Vin che agisce come filtro passa-basso.
+  - Schema KiKad della pcb. Attualmente il prototipo gira su una PCB millefori, con saldatura a stagno e cavi solid wire. Per stabilizzare i picchi di tensione nella speranza di avere una buona lettura dal modulo gps, è stato aggiunto un condensatore di circa 220uF tra GND e Vin che agisce come filtro passa-basso.
   - File del case progettato con Autodesk Fusion e stampato in 3d fdm.
 
 ## Foto:
-<img src="help/F08F08CD-6C05-4CDE-A9A9-9BA1D0234396_1_105_c.jpeg)" alt="FOto dell'implementazione su pcb millefori" width="280">
+<img src="help/F08F08CD-6C05-4CDE-A9A9-9BA1D0234396_1_105_c.jpeg)" alt="Foto dell'implementazione su pcb millefori" width="280">
 
 
 ## License

@@ -4,7 +4,7 @@ Firmware **di test**: serve a rispondere a una sola domanda — *l'hardware funz
 GPS NEO-6M → ESP32 → hotspot del telefono → `POST /update-coordinates` su Railway, senza Mac collegato.
 Stato visibile su LED e su display OLED 128x64.
 
-Non è il firmware definitivo: studiare e riscrivere in `../esp32/`.
+Non è il firmware definitivo.
 
 ---
 
@@ -39,18 +39,6 @@ layout tocchi un file solo.
 ## Cablaggio
 
 | GPS GY-NEO6MV2 | ESP32 DevKit        | Note                                         |
-|----------------|---------------------|----------------------------------------------|
-| VCC            | 3V3                 | il modulo ha il suo regolatore               |
-| GND            | GND                 | **GND comune**, senza questo non va niente   |
-| TX             | GPIO16 (RX2)        | **incrociato**: TX del GPS nel RX dell'ESP32 |
-| RX             | GPIO17 (TX2)        | facoltativo (serve solo per configurare il GPS) |
-
-| OLED 128x64 I2C | ESP32 DevKit       | Note                                         |
-|-----------------|--------------------|----------------------------------------------|
-| VCC             | 3V3                |                                              |
-| GND             | GND                |                                              |
-| SDA             | GPIO21 (D21)       | pin I2C standard dell'ESP32                  |
-| SCL             | GPIO22 (D22)       |                                              |
 
 All'avvio il firmware cerca lo schermo a `0x3C`/`0x3D` e scrive in seriale `[OLED] Schermo trovato`.
 Se non lo trova fa una scansione del bus e **continua senza schermo**: GPS e invio funzionano lo stesso.

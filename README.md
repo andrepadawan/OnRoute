@@ -53,9 +53,9 @@ Work in progress. Since it had to be deployed during an event held in Turin at t
 
 Coming next:
   - Proper multi-line support. Currently, running more than one line requires two services running in parallel, and therefore two different links (this is also why the landing page mentions a second line that isn't shown at that link).
-  - ESP32 firmware review: to meet the deadlines and have a user-friendly device ready for deployment a few weeks before the event, Claude Code was used generatively, only for the `/esp32_test` folder.
-  - KiCad schematic of the PCB. The prototype currently runs on a perfboard, with tin soldering and solid-core wires. To get a better signal from the GPS module, a capacitor of about 220 µF was added between GND and Vin, acting as a low-pass filter.
-  - Files for the enclosure, designed in Autodesk Fusion and 3D printed (FDM).
+  - ESP32 firmware review: to meet the deadlines and have a user-friendly device ready for deployment a few weeks before the event, Claude Code was used generatively only with respect to the `/esp32_test` folder.
+  - KiCad schematic of the PCB. The prototype currently runs on a perfboard, with tin soldering and solid-core wires. To keep the current to the GPS module steady a capacitor of about 220 µF was added between GND and Vin, acting as a low-pass filter.
+  - Files for the case of the whole prototypes, designed in Autodesk Fusion and 3D printed (FDM).
 
 ## Photos
 <img src="help/F08F08CD-6C05-4CDE-A9A9-9BA1D0234396_1_105_c.jpeg" alt="Photo of the perfboard implementation" width="280">
