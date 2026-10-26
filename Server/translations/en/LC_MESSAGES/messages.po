@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2026-10-22 23:20+0200\n"
+"POT-Creation-Date: 2026-10-26 22:32+0100\n"
 "PO-Revision-Date: 2026-05-02 10:41+0200\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: en\n"
@@ -92,15 +92,19 @@ msgstr "Latitude"
 msgid "Longitude"
 msgstr "Longitude"
 
+#: Templates/embed_map.html:5
+msgid "Navetta Flashback Art Fair"
+msgstr "Flashback Art Fair Shuttle bus"
+
 #: Templates/embed_map.html:40
 msgid ""
 "Il servizio è disponibile dalle 11:00 alle 20:00, durante i giorni di "
 "Flashback Art Fair."
-msgstr "The shuttle runs from 11 am to 8 pm during Flashback Art Fair days."
+msgstr "The shuttle bus runs from 11 am to 8 pm during Flashback Art Fair days."
 
 #: Templates/embed_map.html:41 Templates/embed_map.html:43
 msgid "Ops! Nessun aggiornamento in tempo reale dalla navetta."
-msgstr "Oops! No live updates from the shuttle."
+msgstr "Oops! No live updates from the shuttle bus."
 
 #: Templates/embed_map.html:42 Templates/embed_map.html:44
 msgid "Non temere, stiamo arrivando!"
@@ -122,5 +126,5 @@ msgstr ""
 
 #: Templates/embed_map.html:50
 msgid "Segui la navetta in tempo reale e sali a bordo: il viaggio è gratuito"
-msgstr "Follow the shuttle in real time and jump in: the ride is free"
+msgstr "Follow the shuttle bus in real time and jump in: the ride is free"
 
