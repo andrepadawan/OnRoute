@@ -55,10 +55,17 @@ function icons_init(){
 
 
 function read_poi() {
+    const escapeHtml = (str) => String(str)
+  .replace(/&/g, '&amp;')
+  .replace(/</g, '&lt;')
+  .replace(/>/g, '&gt;')
+  .replace(/"/g, '&quot;')
+  .replace(/'/g, '&#39;');
+  
     poi_list = JSON.parse(document.getElementById('poi-data').textContent);
     console.log(poi_list)
     poi_list.forEach(p => {
-        const m = L.marker([p.lat, p.lon]).bindPopup(p.name).addTo(map);
+        const m = L.marker([p.lat, p.lon]).bindPopup(escapeHtml(p.name)).addTo(map);
         markers.set(p.id, m)
     })
 

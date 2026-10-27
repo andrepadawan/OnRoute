@@ -58,6 +58,7 @@ function openPOIDialogue(mode, data){
             const button = form.querySelector('[data-action="modify-poi"]')
             form.action = '/admin/modify-poi'
             button.textContent = 'Modify'
+
             form.querySelector('[name="name"]').value = data.name
             form.querySelector('[name="lat"]').value = data.lat
             form.querySelector('[name="lon"]').value = data.lon
@@ -77,9 +78,10 @@ function openPOIDialogue(mode, data){
 
          function add_listener(poi_list, map){
             poi_list.forEach(p => {
-                 const m = L.marker([p.lat, p.lon]).bindPopup(p.name).addTo(map);
-                 m.on('click', () => setModifyMode(p));
-                 markers.set(p.id, m)
+                
+                const m = L.marker([p.lat, p.lon]).bindPopup(escapeHtml(p.name)).addTo(map);
+                m.on('click', () => setModifyMode(p));
+                markers.set(p.id, m)
              })
              //Adding a listener
              poi_map.on('click', onMapClick)
@@ -96,7 +98,7 @@ function openPOIDialogue(mode, data){
 
          function read_poi_prev(poi_list, map){
             poi_list.forEach(p => {
-                 const m = L.marker([p.lat, p.lon]).bindPopup(p.name).addTo(map);
+                 const m = L.marker([p.lat, p.lon]).bindPopup(escapeHtml(p.name)).addTo(map);
              })
              read_poi(poi_list, map)
 
@@ -150,6 +152,13 @@ function openPOIDialogue(mode, data){
             pill.classList.add('pill-failure')
         }
     }
+
+     const escapeHtml = (str) => String(str)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
 
 preview_map = init_map('preview-map')
 read_poi_prev(poi_list, preview_map)
