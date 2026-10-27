@@ -10,3 +10,16 @@
     impostare r2 = 200m.
     Quando il mezzo arriva, scrivere il mezzo è a "luogo x" entrando in r2. Poi,
         scrivere lasciato "luogo x" -> "verso y" quando lascio r1.
+- Protezione CSRF sul pannello admin (dopo l'evento):
+    - Problema: HTTP Basic -> il browser allega le credenziali anche ai POST partiti da altri siti.
+      CORS NON protegge (blocca la lettura della risposta, non l'invio del form).
+    - Soluzione: dependency verify_same_origin sul router admin (stessa forma di authentication),
+      NON middleware globale: /update-coordinates (RPi/ESP32) non manda Origin.
+        - metodi sicuri (GET) -> passa
+        - Sec-Fetch-Site == same-origin -> passa
+        - fallback: Origin == origine attesa (da variabile d'ambiente, non da request.url: proxy Railway)
+        - altrimenti 403 (fail closed)
+    - Test: curl con Basic auth + header "Sec-Fetch-Site: cross-site" su /admin/add-poi -> 403;
+      dal pannello vero tutto funziona come prima.
+    - Rif: OWASP CSRF Prevention Cheat Sheet (Fetch Metadata, Verifying Origin); words.filippo.io/csrf
+    - Nel frattempo: admin solo in finestra privata, chiuderla a fine uso.
