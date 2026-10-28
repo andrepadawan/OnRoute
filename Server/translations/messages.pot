@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2026-10-26 22:32+0100\n"
+"POT-Creation-Date: 2026-10-28 11:56+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -97,30 +97,36 @@ msgstr ""
 
 #: Templates/embed_map.html:40
 msgid ""
-"Il servizio è disponibile dalle 11:00 alle 20:00, durante i giorni di "
-"Flashback Art Fair."
+"Il servizio è disponibile durante i giorni di Flashback Art Fair dalle "
+"11:00 alle 20:00."
 msgstr ""
 
-#: Templates/embed_map.html:41 Templates/embed_map.html:43
+#: Templates/embed_map.html:41
 msgid "Ops! Nessun aggiornamento in tempo reale dalla navetta."
 msgstr ""
 
-#: Templates/embed_map.html:42 Templates/embed_map.html:44
+#: Templates/embed_map.html:42
 msgid "Non temere, stiamo arrivando!"
 msgstr ""
 
-#: Templates/embed_map.html:45
+#: Templates/embed_map.html:43
+msgid ""
+"Mercoledì 28 Ottobre la navetta per Piazza Vittorio Veneto è disponibile "
+"dalle ore 15:00 alle 20:00"
+msgstr ""
+
+#: Templates/embed_map.html:44
 msgid "Errore generico."
 msgstr ""
 
-#: Templates/embed_map.html:49
+#: Templates/embed_map.html:48
 msgid ""
 "Nei giorni di Flashback Art Fair le navette A/R sono disponibili dalle "
 "11:00 alle 20:00, ogni 40 minuti da Lingotto Fiere e ogni 20 minuti da "
 "Piazza Vittorio Veneto."
 msgstr ""
 
-#: Templates/embed_map.html:50
+#: Templates/embed_map.html:49
 msgid "Segui la navetta in tempo reale e sali a bordo: il viaggio è gratuito"
 msgstr ""
 
