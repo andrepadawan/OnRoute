@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2026-10-28 11:56+0100\n"
+"POT-Creation-Date: 2026-10-30 08:09+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -111,8 +111,8 @@ msgstr ""
 
 #: Templates/embed_map.html:43
 msgid ""
-"Mercoledì 28 Ottobre la navetta per Piazza Vittorio Veneto è disponibile "
-"dalle ore 15:00 alle 20:00"
+"A causa dello sciopero generale di venerdì 30 ottobre, il servizio "
+"navetta da Piazza Vittorio Veneto è sospeso."
 msgstr ""
 
 #: Templates/embed_map.html:44
