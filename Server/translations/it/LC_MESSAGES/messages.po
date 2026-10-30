@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2026-10-30 11:12+0100\n"
+"POT-Creation-Date: 2026-10-30 14:25+0100\n"
 "PO-Revision-Date: 2026-05-02 10:41+0200\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: it\n"
@@ -112,8 +112,9 @@ msgstr ""
 
 #: Templates/embed_map.html:43
 msgid ""
-"A causa dello sciopero generale di venerdì 30 ottobre, il servizio "
-"navetta da Piazza Vittorio Veneto è momentaneamente sospeso."
+"A causa dello sciopero generale di venerdì 30 ottobre e delle conseguenti"
+" variazioni della mobilità, il servizio navetta da Piazza Vittorio Veneto"
+" è momentaneamente sospeso."
 msgstr ""
 
 #: Templates/embed_map.html:44
@@ -205,5 +206,12 @@ msgstr ""
 #~ "A causa dello sciopero generale di "
 #~ "venerdì 30 ottobre, il servizio navetta"
 #~ " da Piazza Vittorio Veneto è sospeso."
+#~ msgstr ""
+
+#~ msgid ""
+#~ "A causa dello sciopero generale di "
+#~ "venerdì 30 ottobre, il servizio navetta"
+#~ " da Piazza Vittorio Veneto è "
+#~ "momentaneamente sospeso."
 #~ msgstr ""
 
