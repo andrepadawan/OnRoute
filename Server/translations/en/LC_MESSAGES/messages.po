@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2026-10-30 14:25+0100\n"
+"POT-Creation-Date: 2026-10-30 20:47+0100\n"
 "PO-Revision-Date: 2026-05-02 10:41+0200\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: en\n"
@@ -111,20 +111,18 @@ msgid "Non temere, stiamo arrivando!"
 msgstr "Don't worry, we're on our way!"
 
 #: Templates/embed_map.html:43
-msgid ""
-"A causa dello sciopero generale di venerdì 30 ottobre e delle conseguenti"
-" variazioni della mobilità, il servizio navetta da Piazza Vittorio Veneto"
-" è momentaneamente sospeso."
-msgstr ""
-"Due to the general strike on Friday, October 30, and the resulting "
-"transport disruptions, the shuttle service from Piazza Vittorio Veneto is"
-" temporarily suspended."
+msgid "Ops! Ancora nessun aggiornamento dalla navetta."
+msgstr "Oops! No live updates from the shuttle bus yet."
 
 #: Templates/embed_map.html:44
+msgid "Non temere, arriviamo presto"
+msgstr "Don't worry, we're on our way!"
+
+#: Templates/embed_map.html:45
 msgid "Errore generico."
 msgstr "Something went wrong."
 
-#: Templates/embed_map.html:48
+#: Templates/embed_map.html:49
 msgid ""
 "Nei giorni di Flashback Art Fair le navette A/R sono disponibili dalle "
 "11:00 alle 20:00, ogni 40 minuti da Lingotto Fiere e ogni 20 minuti da "
@@ -134,7 +132,7 @@ msgstr ""
 "every 40 minutes from Lingotto Fiere and every 20 minutes from Piazza "
 "Vittorio Veneto."
 
-#: Templates/embed_map.html:49
+#: Templates/embed_map.html:50
 msgid "Segui la navetta in tempo reale e sali a bordo: il viaggio è gratuito"
 msgstr "Follow the shuttle bus in real time and jump in: the ride is free"
 
@@ -152,4 +150,17 @@ msgstr "Follow the shuttle bus in real time and jump in: the ride is free"
 #~ "On Wednesday, October 28, the shuttle"
 #~ " to Piazza Vittorio Veneto runs from"
 #~ " 3 pm to 8 pm"
+
+#~ msgid ""
+#~ "A causa dello sciopero generale di "
+#~ "venerdì 30 ottobre e delle conseguenti"
+#~ " variazioni della mobilità, il servizio "
+#~ "navetta da Piazza Vittorio Veneto è "
+#~ "momentaneamente sospeso."
+#~ msgstr ""
+#~ "Due to the general strike on "
+#~ "Friday, October 30, and the resulting"
+#~ " transport disruptions, the shuttle service"
+#~ " from Piazza Vittorio Veneto is "
+#~ "temporarily suspended."
 

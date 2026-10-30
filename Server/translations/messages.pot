@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2026-10-30 14:25+0100\n"
+"POT-Creation-Date: 2026-10-30 20:47+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -110,24 +110,25 @@ msgid "Non temere, stiamo arrivando!"
 msgstr ""
 
 #: Templates/embed_map.html:43
-msgid ""
-"A causa dello sciopero generale di venerdì 30 ottobre e delle conseguenti"
-" variazioni della mobilità, il servizio navetta da Piazza Vittorio Veneto"
-" è momentaneamente sospeso."
+msgid "Ops! Ancora nessun aggiornamento dalla navetta."
 msgstr ""
 
 #: Templates/embed_map.html:44
+msgid "Non temere, arriviamo presto"
+msgstr ""
+
+#: Templates/embed_map.html:45
 msgid "Errore generico."
 msgstr ""
 
-#: Templates/embed_map.html:48
+#: Templates/embed_map.html:49
 msgid ""
 "Nei giorni di Flashback Art Fair le navette A/R sono disponibili dalle "
 "11:00 alle 20:00, ogni 40 minuti da Lingotto Fiere e ogni 20 minuti da "
 "Piazza Vittorio Veneto."
 msgstr ""
 
-#: Templates/embed_map.html:49
+#: Templates/embed_map.html:50
 msgid "Segui la navetta in tempo reale e sali a bordo: il viaggio è gratuito"
 msgstr ""
 
