@@ -111,7 +111,6 @@ msgid "Non temere, stiamo arrivando!"
 msgstr "Don't worry, we're on our way!"
 
 #: Templates/embed_map.html:43
-#, fuzzy
 msgid ""
 "A causa dello sciopero generale di venerdì 30 ottobre, il servizio "
 "navetta da Piazza Vittorio Veneto è sospeso."
