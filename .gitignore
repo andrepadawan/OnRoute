@@ -5,6 +5,8 @@ requirements.in
 .DS_Store
 ./esp32
 .dockerignore
+./.idea
+./share
 
 #VENV
 /bin
